@@ -1,0 +1,13 @@
+dwt_stm32_delay.h:27:22:DWT_Delay_us	24	static
+functions.c:33:1:__io_putchar	16	static
+functions.c:42:1:__io_getchar	16	static
+functions.c:51:6:initArray	16	static
+functions.c:57:6:insertArray	16	static
+functions.c:63:6:freeArray	16	static
+functions.c:69:8:string_parser	48	static
+functions.c:112:6:PlotData	16	static
+functions.c:118:6:InitScreen	16	static
+functions.c:154:6:LCDWrite	72	static
+functions.c:165:6:CountDown	16	static
+functions.c:185:6:SamplePoints	40	static
+functions.c:203:6:AvgAndPlotPoints	120	static

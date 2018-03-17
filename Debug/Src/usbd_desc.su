@@ -1,0 +1,8 @@
+usbd_desc.c:273:11:USBD_HS_DeviceDescriptor	16	static
+usbd_desc.c:285:11:USBD_HS_LangIDStrDescriptor	16	static
+usbd_desc.c:297:11:USBD_HS_ProductStrDescriptor	16	static
+usbd_desc.c:316:11:USBD_HS_ManufacturerStrDescriptor	16	static
+usbd_desc.c:328:11:USBD_HS_SerialStrDescriptor	16	static
+usbd_desc.c:347:11:USBD_HS_ConfigStrDescriptor	16	static
+usbd_desc.c:366:11:USBD_HS_InterfaceStrDescriptor	16	static
+usbd_desc.c:386:11:USBD_HS_USR_BOSDescriptor	16	static
