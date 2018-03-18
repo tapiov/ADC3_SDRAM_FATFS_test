@@ -71,6 +71,9 @@
 #include "stm32f7xx_hal.h"
 #include "stm32746g_discovery.h"
 #include "stm32746g_discovery_lcd.h"
+#include "stm32746g_discovery_sdram.h"
+
+#include "usb_device.h"
 
 typedef struct {
   uint16_t *array;
@@ -85,6 +88,10 @@ extern SDRAM_HandleTypeDef hsdram1;
 
 
 // Prototypes
+
+//extern uint8_t USBPrint(char* Buf);
+
+extern void BSP_SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram, FMC_SDRAM_CommandTypeDef *Command);
 
 extern void initArray(Array *a, size_t initialSize);
 extern void insertArray(Array *a, uint32_t newsize);

@@ -1,0 +1,5 @@
+usb.c:36:6:dummy	4	static
+usb.c:51:5:_write	24	static
+usb.c:78:5:_read	32	static
+usb.c:106:5:kbhit	4	static
+usb.c:127:9:USB_Receive_HS	24	static

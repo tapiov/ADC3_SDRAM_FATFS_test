@@ -50,6 +50,7 @@
 #include "stm32f7xx_hal.h"
 #include "fatfs.h"
 #include "usb_device.h"
+#include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -59,6 +60,9 @@
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
+
+/* Private function prototypes -----------------------------------------------*/
+
 ADC_HandleTypeDef hadc3;
 
 CRC_HandleTypeDef hcrc;
@@ -75,6 +79,8 @@ UART_HandleTypeDef huart1;
 
 DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 SDRAM_HandleTypeDef hsdram1;
+
+USBD_HandleTypeDef husbd;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -95,6 +101,12 @@ static void MX_CRC_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+
+int __io_putchar(int ch) {
+  HAL_UART_Transmit(&huart1, (uint8_t *)ch, 1, 0xFFFF);
+  return ch;
+}
+
 
 /* USER CODE END PFP */
 
@@ -149,24 +161,41 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 
+  // Start SDRAM
   FMC_SDRAM_CommandTypeDef hsdram1Command;
   BSP_SDRAM_Initialization_Sequence(&hsdram1,&hsdram1Command);
 
-  while (1) {
+  // Start LCD
   BSP_LCD_Init();
   BSP_LCD_LayerDefaultInit(0,LCD_FB_START_ADDRESS);
   BSP_LCD_SelectLayer(0);
   BSP_LCD_DisplayOn();
   BSP_LCD_Clear(LCD_COLOR_WHITE);
+  BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
   BSP_LCD_SetTextColor(LCD_COLOR_BLUE);
   BSP_LCD_DisplayStringAtLine(5,(uint8_t*)"Hello to everyone!");
   HAL_Delay(3000);
   BSP_LCD_Clear(LCD_COLOR_BLUE);
+  BSP_LCD_SetBackColor(LCD_COLOR_BLUE);
   BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
   BSP_LCD_DisplayStringAtLine(5,(uint8_t*)"Hello to everyone!");
   HAL_Delay(3000);
 
-  }
+
+  char buffer[1000]=" ";
+
+ // Write to UART
+/*  while (1) {
+	  HAL_UART_Transmit(&huart1,(uint8_t *) buffer, 10, 0xFFFF);
+
+	  HAL_Delay(2000);
+
+	  printf("Hello ready");
+
+	  HAL_Delay(2000);
+
+  }*/
+
 
   if(DWT_Delay_Init())
     {
@@ -186,26 +215,23 @@ int main(void)
   uint32_t    Count_ms=1000;
 
   // Clear screen, set it up
-  InitScreen(LCD_COLOR_WHITE,LCD_COLOR_BLACK);
+  InitScreen(LCD_COLOR_BLACK,LCD_COLOR_WHITE);
 
   // Initialize data storage
   // https://stackoverflow.com/questions/3536153/c-dynamically-growing-array
   Array Data;
   initArray(&Data,NoOfPoints);  // initially 19200 elements
 
-  InitScreen(LCD_COLOR_WHITE,LCD_COLOR_BLACK);
-  BSP_LCD_DisplayStringAt(0, 120, (uint8_t*)"Hello to everyone!", CENTER_MODE);
   LCDWrite(5,"Ready.");
-  BSP_LCD_DisplayStringAt(0, 120, (uint8_t*)"Hello to everyone!", CENTER_MODE);
 
   while (!((strcmp(Cmd,"quit")==0)&&(n==1))) {
 
       // Print Ready and current settings
 
-      printf("Ready. Settings are Points=%lu, Avg=%lu, Period_us=%lu, "
-    		 "Count_ms=%lu. Sampling will take apprx. %.3f secs\r\n",
-             NoOfPoints,AvgSize,Period_us,Count_ms,
-             (float)(NoOfPoints*Period_us/1000000.0));
+      sprintf(buffer,"Ready. Settings are Points=%lu, Avg=%lu, Period_us=%lu, Count_ms=%lu. "
+    		         "Sampling will take apprx %f secs \r\n",
+					  NoOfPoints,AvgSize,Period_us,Count_ms,((float)(NoOfPoints*Period_us/1000000.0)));
+      HAL_UART_Transmit(&huart1,(uint8_t *) buffer, 1000, 0xFFFF);
 
       gets(CmdBuffer);
       printf("I got %s \r\n", CmdBuffer);
@@ -228,6 +254,10 @@ int main(void)
       // pc1.printf("Cmd = %s Arg = %s \r\n",Cmd,Arg);
       for ( size_t i=0;i<n;i++) free( word_array[i] );
       free(word_array);
+
+      //strcpy(Cmd,"quit");
+      //n=1;
+      HAL_Delay(3000);
 
       // Branch based on command
       // meas: Sample and plot a data set

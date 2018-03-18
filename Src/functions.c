@@ -14,40 +14,6 @@
 #include "dwt_stm32_delay.h"
 
 
-#ifdef __GNUC__
-  /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
-     set to 'Yes') calls __io_putchar() */
-  #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-  #define GETCHAR_PROTOTYPE int __io_getchar(int ch)
-#else
-  #define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-  #define GETCHAR_PROTOTYPE int fgetc(int ch, FILE *f)
-#endif /* __GNUC__ */
-
-// UART
-/**
-  * @brief  Retargets the C library printf function to the USART.
-  * @param  None
-  * @retval None
-  */
-PUTCHAR_PROTOTYPE
-{
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the EVAL_COM1 and Loop until the end of transmission */
-  HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
-
-  return ch;
-}
-
-GETCHAR_PROTOTYPE
-{
-  /* Place your implementation of fputc here */
-  /* e.g. read a character from the EVAL_COM1 and Loop until the end of transmission */
-  HAL_UART_Receive(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
-
-  return ch;
-}
-
 void initArray(Array *a, size_t initialSize) {
   a->array = (uint16_t *)malloc(initialSize * sizeof(uint16_t));
   a->used = 0;
@@ -145,7 +111,7 @@ void InitScreen(uint32_t BackGroundColor,uint32_t ForeGroundColor)
 // #define LCD_COLOR_ORANGE        ((uint32_t)0xFFFFA500)
 // #define LCD_COLOR_TRANSPARENT   ((uint32_t)0xFF000000)
 
-	BSP_LCD_Clear(LCD_COLOR_WHITE);
+	BSP_LCD_Clear(BackGroundColor);
 	BSP_LCD_SetBackColor(BackGroundColor);
 	BSP_LCD_SetTextColor(ForeGroundColor);
 	BSP_LCD_SetFont(&Font20);
