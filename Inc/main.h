@@ -72,6 +72,7 @@
 #include "stm32746g_discovery_sdram.h"
 
 #include "usb_device.h"
+#include "fatfs.h"
 
 typedef struct {
 	uint16_t *array;
@@ -83,6 +84,8 @@ extern ADC_HandleTypeDef hadc3;
 extern LTDC_HandleTypeDef hltdc;
 extern UART_HandleTypeDef huart1;
 extern SDRAM_HandleTypeDef hsdram1;
+
+extern char buffer[1000];
 
 // Prototypes
 
@@ -100,8 +103,11 @@ extern void PlotData(uint32_t XCoordinate, uint32_t YCoordinate);
 extern void InitScreen(uint32_t BackGroundColor, uint32_t ForeGroundColor);
 extern void LCDWrite(uint32_t Line, char Str[]);
 extern void CountDown(uint32_t millisecs);
+extern FRESULT scan_files(char* path);
 extern void SamplePoints(Array *Data, uint32_t NoOfPoints, uint32_t Period_us);
 extern void AvgAndPlotPoints(Array *Data, uint32_t NoOfPoints, uint32_t AvgSize);
+extern void WriteData2FS(Array *Data, uint32_t NoOfPoints, uint32_t MeasNo);
+extern void DirList(void);
 
 /* USER CODE END Includes */
 

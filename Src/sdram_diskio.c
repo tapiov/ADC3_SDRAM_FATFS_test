@@ -133,7 +133,7 @@ DSTATUS SDRAMDISK_status(BYTE lun) {
  * @retval DRESULT: Operation result
  */
 DRESULT SDRAMDISK_read(BYTE lun, BYTE *buff, DWORD sector, UINT count) {
-	uint32_t *pSrcBuffer = (uint32_t *) buff;
+	uint32_t *pSrcBuffer = (uint32_t *) &buff;
 	uint32_t BufferSize = (BLOCK_SIZE * count) / 4;
 	uint32_t *pSdramAddress = (uint32_t *) (SDRAM_DISK_ADDR
 			+ (sector * BLOCK_SIZE));
@@ -141,7 +141,7 @@ DRESULT SDRAMDISK_read(BYTE lun, BYTE *buff, DWORD sector, UINT count) {
 	uint8_t RES_OK;
 
 	//TV: uint32_t *pSdramAddress = (uint32_t *) (SDRAM_DEVICE_ADDR + (sector * BLOCK_SIZE));
-	RES_OK = BSP_SDRAM_ReadData((uint32_t) *pSdramAddress, pSrcBuffer,
+	RES_OK = BSP_SDRAM_ReadData(pSdramAddress, (uint32_t *) *pSrcBuffer,
 			BufferSize);
 
 	//for (; BufferSize != 0; BufferSize--) {
@@ -165,7 +165,7 @@ DRESULT SDRAMDISK_read(BYTE lun, BYTE *buff, DWORD sector, UINT count) {
  */
 #if _USE_WRITE == 1
 DRESULT SDRAMDISK_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count) {
-	uint32_t *pDstBuffer = (uint32_t *) buff;
+	uint32_t *pDstBuffer = (uint32_t *) &buff;
 	uint32_t BufferSize = (BLOCK_SIZE * count) / 4;
 	uint32_t *pSramAddress = (uint32_t *) (SDRAM_DISK_ADDR
 			+ (sector * BLOCK_SIZE));
@@ -173,7 +173,7 @@ DRESULT SDRAMDISK_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count) {
 	uint8_t RES_OK;
 
 	//TV: uint32_t *pSramAddress = (uint32_t *) (SDRAM_DEVICE_ADDR + (sector * BLOCK_SIZE));
-	RES_OK = BSP_SDRAM_WriteData((uint32_t) *pSramAddress, pDstBuffer,
+	RES_OK = BSP_SDRAM_WriteData(pSramAddress, (uint32_t *) *pDstBuffer,
 			BufferSize);
 
 	//for (; BufferSize != 0; BufferSize--) {

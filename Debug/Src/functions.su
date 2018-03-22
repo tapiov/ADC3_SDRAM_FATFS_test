@@ -5,7 +5,10 @@ functions.c:28:6:freeArray	16	static
 functions.c:34:8:string_parser	48	static
 functions.c:76:6:PlotData	16	static
 functions.c:81:6:InitScreen	16	static
-functions.c:116:6:LCDWrite	72	static
-functions.c:126:6:CountDown	16	static
-functions.c:145:6:SamplePoints	40	static
-functions.c:162:6:AvgAndPlotPoints	120	static
+functions.c:89:6:LCDWrite	72	static
+functions.c:97:6:CountDown	16	static
+functions.c:116:9:scan_files	1080	static
+functions.c:149:6:SamplePoints	1040	static
+functions.c:168:6:AvgAndPlotPoints	1120	static
+functions.c:207:6:WriteData2FS	1608	static
+functions.c:252:6:DirList	832	static
