@@ -89,7 +89,9 @@ extern char buffer[1000];
 
 // Prototypes
 
-//extern uint8_t USBPrint(char* Buf);
+
+extern int __io_putchar(int ch);
+extern int _write(int file, char *ptr, int len);
 
 extern void BSP_SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram,
 		FMC_SDRAM_CommandTypeDef *Command);

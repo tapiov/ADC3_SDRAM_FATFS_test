@@ -109,11 +109,6 @@ static void MX_CRC_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
-int __io_putchar(int ch) {
-	HAL_UART_Transmit(&huart1, (uint8_t *) ch, 1, 0xFFFF);
-	return ch;
-}
-
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
@@ -210,15 +205,13 @@ int main(void) {
 
 	/*##-1- Link the SDRAM disk I/O driver ##################################*/
 	if (FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMPath) == 0) {
-		sprintf(buffer, "SDRAM FATFS link Success 1. \r\n");
-		HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+		printf("SDRAM FATFS link Success 1. \r\n");
 		/*##-2- Register the file system object to the FatFs module ##############*/
 		if (f_mount(&SDRAMFatFs, (TCHAR const*) SDRAMPath, 0) != FR_OK) {
 			/* FatFs Initialization Error */
 			_Error_Handler(__FILE__, __LINE__);
 		} else {
-			sprintf(buffer, "SDRAM FATFS mount Success 2. \r\n");
-			HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+			printf("SDRAM FATFS mount Success 2. \r\n");
 			/*##-3- Create a FAT file system (format) on the logical drive #########*/
 			/* WARNING: Formatting the uSD card will delete all content on the device */
 			if (f_mkfs((TCHAR const*) SDRAMPath, FM_ANY, 0, workBuffer,
@@ -226,8 +219,7 @@ int main(void) {
 				/* FatFs Format Error */
 				_Error_Handler(__FILE__, __LINE__);
 			} else {
-				sprintf(buffer, "SDRAM FATFS format Success 3. \r\n");
-				HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+				printf("SDRAM FATFS format Success 3. \r\n");
 				/*##-4- Create and Open a new text file object with write access #####*/
 				if (f_open(&MyFile, "1:\\STM32.TXT",
 						FA_CREATE_ALWAYS | FA_WRITE)
@@ -235,9 +227,7 @@ int main(void) {
 					/* 'STM32.TXT' file Open for write Error */
 					_Error_Handler(__FILE__, __LINE__);
 				} else {
-					sprintf(buffer, "SDRAM FATFS fopen Success 4. \r\n");
-					HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000,
-							0xFFFF);
+					printf("SDRAM FATFS fopen Success 4. \r\n");
 					/*##-5- Write data to the text file ################################*/
 					res = f_write(&MyFile, wtext, sizeof(wtext),
 							(void *) &byteswritten);
@@ -246,14 +236,10 @@ int main(void) {
 						/* 'STM32.TXT' file Write or EOF Error */
 						_Error_Handler(__FILE__, __LINE__);
 					} else {
-						sprintf(buffer, "SDRAM FATFS write Success 5. \r\n");
-						HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000,
-								0xFFFF);
+						printf("SDRAM FATFS write Success 5. \r\n");
 						/*##-6- Close the open text file #################################*/
 						f_close(&MyFile);
-						sprintf(buffer, "SDRAM FATFS fclose Success 6. \r\n");
-						HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000,
-								0xFFFF);
+						printf("SDRAM FATFS fclose Success 6. \r\n");
 
 						/*##-7- Open the text file object with read access ###############*/
 						if (f_open(&MyFile, "1:\\STM32.TXT", FA_READ)
@@ -261,10 +247,7 @@ int main(void) {
 							/* 'STM32.TXT' file Open for read Error */
 							_Error_Handler(__FILE__, __LINE__);
 						} else {
-							sprintf(buffer,
-									"SDRAM FATFS fopen(read) Success 6. \r\n");
-							HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000,
-									0xFFFF);
+							printf("SDRAM FATFS fopen(read) Success 7. \r\n");
 							/*##-8- Read data from the text file ###########################*/
 							res = f_read(&MyFile, rtext, sizeof(rtext),
 									(UINT*) &bytesread);
@@ -273,27 +256,17 @@ int main(void) {
 								/* 'STM32.TXT' file Read or EOF Error */
 								_Error_Handler(__FILE__, __LINE__);
 							} else {
-								sprintf(buffer,
-										"SDRAM FATFS read Success 7. \r\n");
-								HAL_UART_Transmit(&huart1, (uint8_t *) buffer,
-										1000, 0xFFFF);
+								printf("SDRAM FATFS read Success 8. \r\n");
 								/*##-9- Close the open text file #############################*/
 								f_close(&MyFile);
-								sprintf(buffer,
-										"SDRAM FATFS fclose Success 8. \r\n");
-								HAL_UART_Transmit(&huart1, (uint8_t *) buffer,
-										1000, 0xFFFF);
-
+								printf("SDRAM FATFS fclose Success 9. \r\n");
 								/*##-10- Compare read data with the expected data ############*/
 								if ((bytesread != byteswritten)) {
 									/* Read data is different from the expected data */
 									_Error_Handler(__FILE__, __LINE__);
 								} else {
 									/* Success of the demo: no error occurrence */
-									sprintf(buffer,
-											"SDRAM FATFS Success 9. \r\n");
-									HAL_UART_Transmit(&huart1,
-											(uint8_t *) buffer, 1000, 0xFFFF);
+									printf("SDRAM FATFS Success 10. \r\n");
 
 								}
 							}
@@ -304,11 +277,9 @@ int main(void) {
 		}
 	}
 
-
-
-	char CmdBuffer[30] = " ";
-	char Arg[30] = " ";
-	char Cmd[30] = " ";
+	char CmdBuffer[30];
+	char Arg[30];
+	char Cmd[30];
 	size_t n = 0;
 	uint32_t MeasNo = 0;
 
@@ -327,25 +298,48 @@ int main(void) {
 
 	LCDWrite(5, "Ready.");
 
+	Cmd[0] = '\0';
+	Arg[0] = '\0';
+	CmdBuffer[0] = '\0';
+
 	while (!((strcmp(Cmd, "quit") == 0) && (n == 1))) {
 
 		// Print Ready and current settings
 
-		sprintf(buffer,
+		printf(
 				"Ready. Settings are Points=%lu, Avg=%lu, Period_us=%lu, Count_ms=%lu. "
 						"Sampling will take apprx %f secs \r\n", NoOfPoints,
 				AvgSize, Period_us, Count_ms,
 				((float) (NoOfPoints * Period_us / 1000000.0)));
-		HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
 
-		Cmd[30] = " ";
-		HAL_UART_Receive(&huart1, (uint8_t *) CmdBuffer, 30, 0xFFFF);
+		Cmd[0] = '\0';
+		Arg[0] = '\0';
+		CmdBuffer[0] = '\0';
 
-		sprintf(buffer, "I got %s \r\n", CmdBuffer);
-		HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+		//HAL_UART_Receive(&huart1, (uint8_t *) CmdBuffer, 30, 0xFFFF);
 
-		strcpy(Cmd, " ");
-		strcpy(Arg, " ");
+		//## -3- Put UART peripheral in reception process
+		// Any data received will be stored "CmdBuffer" buffer : the number max of
+		// data received is 30 */
+		// gets(CmdBuffer);
+		fflush(stdin);
+		fgets(CmdBuffer, sizeof(CmdBuffer), stdin);
+		//if (HAL_UART_Receive_IT(&huart1, (uint8_t *) CmdBuffer, 30) != HAL_OK) {
+			// Transfer error in reception process
+		//	Error_Handler();
+		//}
+
+		//## -4- Wait for the end of the transfer
+		//  Before starting a new communication transfer, you need to check the current
+		//    state of the peripheral; if its busy you need to wait for the end of current
+		//    transfer before starting a new one.
+		//    For simplicity reasons, this example is just waiting till the end of the
+		//    transfer, but application may perform other tasks while transfer operation
+		//    is ongoing.
+		//while (HAL_UART_GetState(&huart1) != HAL_UART_STATE_READY) {
+		//}
+
+		printf("I got %s \r\n", CmdBuffer);
 
 		// Parse command and possible numeric arg
 		char s[] = "Initial string";
@@ -362,20 +356,15 @@ int main(void) {
 				strcpy(Arg, word_array[i]);
 			}
 			if (i > 1) {
-				sprintf(buffer, "Wrong number of arguments \r\n");
-				HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
 				printf("Wrong number of arguments \r\n");
 			}
 		}
 
-		sprintf(buffer, "Cmd = %s Arg = %s \r\n", Cmd, Arg);
-		HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+		printf("Cmd = %s Arg = %s n = %u \r\n", Cmd, Arg, n);
 
 		for (size_t i = 0; i < n; i++)
 			free(word_array[i]);
 		free(word_array);
-
-		HAL_Delay(3000);
 
 		// Branch based on command
 		// meas: Sample and plot a data set
@@ -398,13 +387,11 @@ int main(void) {
 		else if ((strcmp(Cmd, "setpoints") == 0) && (n == 2)) {
 			// Allocate more or less data space
 			NoOfPoints = (uint32_t) strtol(Arg, NULL, 10);
-			sprintf(buffer, "Old Data size is %lu New NoOfPOints = %lu \r\n",
+			printf("Old Data size is %u New NoOfPOints = %lu \r\n",
 					Data.size, NoOfPoints);
-			HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
 
 			insertArray(&Data, NoOfPoints);
-			sprintf(buffer, "New Array size is %u \r\n", Data.size);
-			HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+			printf("New Array size is %u \r\n", Data.size);
 		}
 
 		// setavg: Adjust average amount in samples
@@ -430,8 +417,7 @@ int main(void) {
 		else if ((strcmp(Cmd, "quit") == 0) && (n == 1)) {
 			// Do nothing yet
 		} else {
-			sprintf(buffer, "Wrong command or argument \r\n");
-			HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+			printf("Wrong command or argument \r\n");
 		}
 	}
 
@@ -445,8 +431,7 @@ int main(void) {
 	InitScreen(LCD_COLOR_BLACK, LCD_COLOR_WHITE);
 	LCDWrite(5, "Stop.");
 
-	sprintf(buffer, "Exit. Data freed. Stop. \r\n");
-	HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+	printf("Exit. Data freed. Stop. \r\n");
 
 	/* USER CODE END 2 */
 
@@ -1190,6 +1175,36 @@ static void MX_GPIO_Init(void) {
 }
 
 /* USER CODE BEGIN 4 */
+
+int __io_putchar(int ch) {
+	uint8_t c[1];
+	c[0] = ch & 0x00FF;
+	HAL_UART_Transmit(&huart1, &*c, 1, 10);
+	return ch;
+}
+
+int _write(int file, char *ptr, int len) {
+	int DataIdx;
+	for (DataIdx = 0; DataIdx < len; DataIdx++) {
+		__io_putchar(*ptr++);
+	}
+	return len;
+}
+
+int __io_getchar(int ch) {
+	uint8_t c[1];
+	c[0] = ch & 0x00FF;
+	HAL_UART_Receive(&huart1, &*c, 1, 10);
+	return ch;
+}
+
+int _read(int file, char *ptr, int len) {
+	int DataIdx;
+	for (DataIdx = 0; DataIdx < len; DataIdx++) {
+		__io_getchar(*ptr++);
+	}
+	return len;
+}
 
 /* USER CODE END 4 */
 

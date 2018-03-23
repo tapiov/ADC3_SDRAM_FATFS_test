@@ -120,7 +120,6 @@ FRESULT scan_files(char* path
 	DIR dir;
 	UINT i;
 	static FILINFO fno;
-	char buffer[1000] = " ";
 
 	res = f_opendir(&dir, path); /* Open the directory */
 	if (res == FR_OK) {
@@ -136,8 +135,7 @@ FRESULT scan_files(char* path
 					break;
 				path[i] = 0;
 			} else { /* It is a file. */
-				sprintf(buffer, "%s/%s 		%lu \r\n", path, fno.fname, fno.fsize);
-				HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+				printf("%s/%s 		%lu \r\n", path, fno.fname, fno.fsize);
 			}
 		}
 		f_closedir(&dir);
@@ -148,7 +146,6 @@ FRESULT scan_files(char* path
 
 void SamplePoints(Array *Data, uint32_t NoOfPoints, uint32_t Period_us) {
 	uint32_t i;
-	char buffer[1000] = " ";
 
 	HAL_ADC_Start(&hadc3);
 
@@ -161,21 +158,18 @@ void SamplePoints(Array *Data, uint32_t NoOfPoints, uint32_t Period_us) {
 	InitScreen(LCD_COLOR_BLACK, LCD_COLOR_WHITE);
 	LCDWrite(5, "DONE!");
 
-	sprintf(buffer, "Sampling done.\r\n");
-	HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+	printf("Sampling done.\r\n");
 }
 
 void AvgAndPlotPoints(Array *Data, uint32_t NoOfPoints, uint32_t AvgSize) {
 
 	uint32_t i1, i2;
-	char buffer[1000] = " ";
 
 	uint32_t BufferSum, BufferAvg;
 	uint32_t XCoord, YCoord;
 	char MyStr[50];
 
-	sprintf(buffer, "Start averaging... \r\n");
-	HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+	printf("Start averaging... \r\n");
 
 	InitScreen(LCD_COLOR_BLACK, LCD_COLOR_RED);
 
@@ -196,8 +190,7 @@ void AvgAndPlotPoints(Array *Data, uint32_t NoOfPoints, uint32_t AvgSize) {
 		PlotData(XCoord, YCoord);
 	}
 
-	sprintf(buffer, "Averaging done, Points = %lu Avg = %lu \r\n", i1, AvgSize);
-	HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+	printf("Averaging done, Points = %lu Avg = %lu \r\n", i1, AvgSize);
 
 	LCDWrite(0, "");
 	snprintf(MyStr, 50, "Pnts = %lu Avg = %lu", NoOfPoints, AvgSize);
@@ -212,7 +205,7 @@ void WriteData2FS(Array *Data, uint32_t NoOfPoints, uint32_t MeasNo) {
 	uint32_t byteswritten, totalbytes; //File write counts
 	char buffer[1000] = " ";
 
-	char* fname = sprintf("1:\\meas%lu.txt", MeasNo);
+	char* fname = (char *) (sprintf("1:\\meas_%lu.txt", (char *) MeasNo));
 	FIL MyFile;
 	uint32_t idx;
 
@@ -223,8 +216,7 @@ void WriteData2FS(Array *Data, uint32_t NoOfPoints, uint32_t MeasNo) {
 		// File Open for write Error
 		_Error_Handler(__FILE__, __LINE__);
 	} else {
-		sprintf(buffer, "Opened file %s OK \r\n", fname);
-			HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+		printf("Opened file %s OK \r\n", fname);
 
 		// Write data to the text file line by line
 		for (idx = 0; idx < NoOfPoints; idx++) {
@@ -238,14 +230,12 @@ void WriteData2FS(Array *Data, uint32_t NoOfPoints, uint32_t MeasNo) {
 			}
 		}
 
-		sprintf(buffer, "File %s, %lu bytes written \r\n", fname, totalbytes);
-		HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+		printf("File %s, %lu bytes written \r\n", fname, totalbytes);
 
 		/*##-6- Close the open text file #################################*/
 		f_close(&MyFile);
 
-		sprintf(buffer, "Closed file %s OK \r\n", fname);
-		HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
+		printf("Closed file %s OK \r\n", fname);
 	}
 }
 
