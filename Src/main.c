@@ -256,7 +256,8 @@ int main(void) {
 								0xFFFF);
 
 						/*##-7- Open the text file object with read access ###############*/
-						if (f_open(&MyFile, "1:\STM32.TXT", FA_READ) != FR_OK) {
+						if (f_open(&MyFile, "1:\\STM32.TXT", FA_READ)
+								!= FR_OK) {
 							/* 'STM32.TXT' file Open for read Error */
 							_Error_Handler(__FILE__, __LINE__);
 						} else {
@@ -397,7 +398,7 @@ int main(void) {
 		else if ((strcmp(Cmd, "setpoints") == 0) && (n == 2)) {
 			// Allocate more or less data space
 			NoOfPoints = (uint32_t) strtol(Arg, NULL, 10);
-			sprintf(buffer, "Old Data size is %u New NoOfPOints = %u \r\n",
+			sprintf(buffer, "Old Data size is %lu New NoOfPOints = %lu \r\n",
 					Data.size, NoOfPoints);
 			HAL_UART_Transmit(&huart1, (uint8_t *) buffer, 1000, 0xFFFF);
 
