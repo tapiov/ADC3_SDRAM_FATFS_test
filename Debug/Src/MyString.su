@@ -1,0 +1,8 @@
+MyString.c:90:13:String_GetString	32	static
+MyString.c:231:13:String_PutString	24	static
+MyString.c:259:13:String_PutStringN	16	static
+MyString.c:332:9:String_PutByte	16	static
+MyString.c:397:9:String_GetByte	16	static
+MyString.c:418:6:String_GetRxStatus	4	static
+MyString.c:444:6:HAL_UART_TxCpltCallback	16	static
+MyString.c:461:6:HAL_UART_RxCpltCallback	16	static

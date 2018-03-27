@@ -56,6 +56,7 @@
 
 #include "sdram_diskio.h"
 #include "dwt_stm32_delay.h"
+#include "MyString.h"
 
 /* USER CODE END Includes */
 
@@ -128,8 +129,6 @@ int main(void) {
 	uint8_t wtext[] = "This is STM32 working with FatFs"; /* File write buffer */
 	uint8_t rtext[100]; /* File read buffer */
 
-	char buffer[1000] = " ";
-
 	/* USER CODE END 1 */
 
 	/* Enable I-Cache-------------------------------------------------------------*/
@@ -196,12 +195,6 @@ int main(void) {
 	}
 
 	/* USER CODE START 2 */
-
-	BYTE lun = 0;
-	BYTE RES;
-	BYTE *DataBuffer = (BYTE *) malloc(1500);
-
-	DRESULT DRES;
 
 	/*##-1- Link the SDRAM disk I/O driver ##################################*/
 	if (FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMPath) == 0) {
@@ -277,11 +270,11 @@ int main(void) {
 		}
 	}
 
-	char CmdBuffer[30];
 	char Arg[30];
 	char Cmd[30];
 	size_t n = 0;
 	uint32_t MeasNo = 0;
+	int flag = 0;
 
 	uint32_t NoOfPoints = 19200;
 	uint32_t AvgSize = 10;
@@ -296,11 +289,10 @@ int main(void) {
 	Array Data;
 	initArray(&Data, NoOfPoints);  // initially 19200 elements
 
-	LCDWrite(5, "Ready.");
+	// LCDWrite(5, "Ready.");
 
 	Cmd[0] = '\0';
 	Arg[0] = '\0';
-	CmdBuffer[0] = '\0';
 
 	while (!((strcmp(Cmd, "quit") == 0) && (n == 1))) {
 
@@ -314,7 +306,7 @@ int main(void) {
 
 		Cmd[0] = '\0';
 		Arg[0] = '\0';
-		CmdBuffer[0] = '\0';
+		char CmdBuffer[30];
 
 		//HAL_UART_Receive(&huart1, (uint8_t *) CmdBuffer, 30, 0xFFFF);
 
@@ -322,11 +314,25 @@ int main(void) {
 		// Any data received will be stored "CmdBuffer" buffer : the number max of
 		// data received is 30 */
 		// gets(CmdBuffer);
-		fflush(stdin);
-		fgets(CmdBuffer, sizeof(CmdBuffer), stdin);
-		//if (HAL_UART_Receive_IT(&huart1, (uint8_t *) CmdBuffer, 30) != HAL_OK) {
-			// Transfer error in reception process
+		//fflush(stdin);
+		//fgets(CmdBuffer, sizeof(CmdBuffer), stdin);
+		//while (CmdBuffer[strlen(CmdBuffer) - 1] != '\n') {
+		//if (HAL_UART_Receive(&huart1, (uint8_t *) CmdBuffer, 30, 10)
+		//		!= HAL_OK) {
+		//	// Transfer error in reception process
 		//	Error_Handler();
+		//}
+		//}
+
+		strcpy(CmdBuffer, " ");
+		while (strcmp(CmdBuffer, " ") == 0) {
+			String_GetString((uint8_t *) CmdBuffer);
+		}
+
+		//if (__getline(&CmdBuffer, &size, stdin) == -1) {
+		//	printf("No line \n");
+		//} else {
+		//	printf("%s\n", CmdBuffer);
 		//}
 
 		//## -4- Wait for the end of the transfer
@@ -339,7 +345,7 @@ int main(void) {
 		//while (HAL_UART_GetState(&huart1) != HAL_UART_STATE_READY) {
 		//}
 
-		printf("I got %s \r\n", CmdBuffer);
+		printf("\r\n I got %s \r\n", CmdBuffer);
 
 		// Parse command and possible numeric arg
 		char s[] = "Initial string";
@@ -361,6 +367,10 @@ int main(void) {
 		}
 
 		printf("Cmd = %s Arg = %s n = %u \r\n", Cmd, Arg, n);
+		// printf("We are changing the binary here 1  = %s Arg = %s n = %u \r\n",
+		//		Cmd, Arg, n);
+		//printf("We are changing the binary here 2 = %s Arg = %s n = %u \r\n",
+		//		Cmd, Arg, n);
 
 		for (size_t i = 0; i < n; i++)
 			free(word_array[i]);
@@ -1191,17 +1201,20 @@ int _write(int file, char *ptr, int len) {
 	return len;
 }
 
-int __io_getchar(int ch) {
-	uint8_t c[1];
-	c[0] = ch & 0x00FF;
-	HAL_UART_Receive(&huart1, &*c, 1, 10);
-	return ch;
+int __io_getchar(void) {
+	HAL_StatusTypeDef Status = HAL_BUSY;
+	uint8_t Data;
+
+	while (Status != HAL_OK)
+		Status = HAL_UART_Receive(&huart1, &Data, 1, 10);
+
+	return (Data);
 }
 
 int _read(int file, char *ptr, int len) {
 	int DataIdx;
 	for (DataIdx = 0; DataIdx < len; DataIdx++) {
-		__io_getchar(*ptr++);
+		*ptr++ = __io_getchar();
 	}
 	return len;
 }
@@ -1238,7 +1251,7 @@ void _Error_Handler(char *file, int line) {
 	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 
-	printf("Error file = %s Line = %d ", file, line);
+	printf("Error file = %s Line = %d", (char *) file, (int) line);
 
 	while (1) {
 	}

@@ -65,6 +65,7 @@
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
+#include <stdbool.h>
 
 #include "stm32f7xx_hal.h"
 #include "stm32746g_discovery.h"
