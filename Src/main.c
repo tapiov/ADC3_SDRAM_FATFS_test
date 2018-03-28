@@ -325,7 +325,7 @@ int main(void) {
 		//}
 
 		strcpy(CmdBuffer, " ");
-		while (strcmp(CmdBuffer, " ") == 0) {
+		while ((strcmp(CmdBuffer, " ") == 0) || (CmdBuffer[0] == '\0')) {
 			String_GetString((uint8_t *) CmdBuffer);
 		}
 
