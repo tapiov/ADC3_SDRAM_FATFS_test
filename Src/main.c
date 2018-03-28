@@ -207,7 +207,7 @@ int main(void) {
 			printf("SDRAM FATFS mount Success 2. \r\n");
 			/*##-3- Create a FAT file system (format) on the logical drive #########*/
 			/* WARNING: Formatting the uSD card will delete all content on the device */
-			if (f_mkfs((TCHAR const*) SDRAMPath, FM_ANY, 0, workBuffer,
+			if (f_mkfs((TCHAR const*) SDRAMPath, FM_FAT32, 0, workBuffer,
 					sizeof(workBuffer)) != FR_OK) {
 				/* FatFs Format Error */
 				_Error_Handler(__FILE__, __LINE__);

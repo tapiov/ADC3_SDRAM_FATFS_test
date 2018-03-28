@@ -248,7 +248,7 @@ void DirList(void) {
 	// Should be mounted already
 	// res = f_mount(&fs, "", 1);
 	// if (res == FR_OK) {
-			strcpy(buff, "/");
+	strcpy(buff, "1://");
 			res = scan_files(buff);
 	//}
 	}
