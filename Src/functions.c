@@ -205,7 +205,7 @@ void WriteData2FS(Array *Data, uint32_t NoOfPoints, uint32_t MeasNo) {
 	uint32_t byteswritten, totalbytes; //File write counts
 	char buffer[1000] = " ";
 
-	char* fname = (char *) (sprintf("1:\\meas_%lu.txt", (char *) MeasNo));
+	char* fname = (char *) (sprintf("meas_%lu.txt", (char *) MeasNo));
 	FIL MyFile;
 	uint32_t idx;
 
@@ -246,10 +246,13 @@ void DirList(void) {
 	char buff[256];
 
 	// Should be mounted already
-	// res = f_mount(&fs, "", 1);
-	// if (res == FR_OK) {
-	strcpy(buff, "1://");
-			res = scan_files(buff);
-	//}
+	res = f_mount(&fs, "", 1);
+	if (res == FR_OK) {
+		strcpy(buff, "1://");
+		res = scan_files(buff);
+	} else {
+		printf("Error: Filesystem mount failed \r\n");
+		_Error_Handler(__FILE__, __LINE__);
 	}
+}
 

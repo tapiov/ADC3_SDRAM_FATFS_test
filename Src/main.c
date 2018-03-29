@@ -272,9 +272,10 @@ int main(void) {
 
 	char Arg[30];
 	char Cmd[30];
+	char CmdBuffer[30];
+
 	size_t n = 0;
 	uint32_t MeasNo = 0;
-	int flag = 0;
 
 	uint32_t NoOfPoints = 19200;
 	uint32_t AvgSize = 10;
@@ -306,44 +307,11 @@ int main(void) {
 
 		Cmd[0] = '\0';
 		Arg[0] = '\0';
-		char CmdBuffer[30];
-
-		//HAL_UART_Receive(&huart1, (uint8_t *) CmdBuffer, 30, 0xFFFF);
-
-		//## -3- Put UART peripheral in reception process
-		// Any data received will be stored "CmdBuffer" buffer : the number max of
-		// data received is 30 */
-		// gets(CmdBuffer);
-		//fflush(stdin);
-		//fgets(CmdBuffer, sizeof(CmdBuffer), stdin);
-		//while (CmdBuffer[strlen(CmdBuffer) - 1] != '\n') {
-		//if (HAL_UART_Receive(&huart1, (uint8_t *) CmdBuffer, 30, 10)
-		//		!= HAL_OK) {
-		//	// Transfer error in reception process
-		//	Error_Handler();
-		//}
-		//}
 
 		strcpy(CmdBuffer, " ");
 		while ((strcmp(CmdBuffer, " ") == 0) || (CmdBuffer[0] == '\0')) {
 			String_GetString((uint8_t *) CmdBuffer);
 		}
-
-		//if (__getline(&CmdBuffer, &size, stdin) == -1) {
-		//	printf("No line \n");
-		//} else {
-		//	printf("%s\n", CmdBuffer);
-		//}
-
-		//## -4- Wait for the end of the transfer
-		//  Before starting a new communication transfer, you need to check the current
-		//    state of the peripheral; if its busy you need to wait for the end of current
-		//    transfer before starting a new one.
-		//    For simplicity reasons, this example is just waiting till the end of the
-		//    transfer, but application may perform other tasks while transfer operation
-		//    is ongoing.
-		//while (HAL_UART_GetState(&huart1) != HAL_UART_STATE_READY) {
-		//}
 
 		printf("\r\n I got %s \r\n", CmdBuffer);
 
@@ -367,10 +335,6 @@ int main(void) {
 		}
 
 		printf("Cmd = %s Arg = %s n = %u \r\n", Cmd, Arg, n);
-		// printf("We are changing the binary here 1  = %s Arg = %s n = %u \r\n",
-		//		Cmd, Arg, n);
-		//printf("We are changing the binary here 2 = %s Arg = %s n = %u \r\n",
-		//		Cmd, Arg, n);
 
 		for (size_t i = 0; i < n; i++)
 			free(word_array[i]);
