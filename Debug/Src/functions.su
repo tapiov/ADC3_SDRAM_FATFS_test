@@ -11,4 +11,4 @@ functions.c:116:9:scan_files	72	static
 functions.c:147:6:SamplePoints	40	static
 functions.c:164:6:AvgAndPlotPoints	120	static
 functions.c:200:6:WriteData2FS	1608	static
-functions.c:242:6:DirList	832	static
+functions.c:242:6:DirList	872	static

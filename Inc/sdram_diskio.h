@@ -61,12 +61,12 @@
 /* Exported functions ------------------------------------------------------- */
 extern const Diskio_drvTypeDef SDRAMDISK_Driver;
 
+/* USER CODE BEGIN lastSection */
+
 // TV: Hop over VRAM
 #define SDRAM_DISK_ADDR		SDRAM_DEVICE_ADDR + ((uint32_t)0x100000)
 #define SDRAM_DISK_SIZE		SDRAM_DEVICE_SIZE - ((uint32_t)0x100000)
 
-/* USER CODE BEGIN lastSection */
-/* can be used to modify / undefine previous code or add new definitions */
 /* USER CODE END lastSection */
 
 #endif /* __SDRAM_DISKIO_H */

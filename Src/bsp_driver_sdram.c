@@ -51,7 +51,6 @@
 /* Includes ------------------------------------------------------------------*/
 
 #include <stdlib.h>
-
 #include "bsp_driver_sdram.h"
 
 /* Extern variables ----------------------------------------------------------*/
@@ -66,31 +65,6 @@ void BSP_SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram, FMC_SDRAM_Co
 uint8_t BSP_SDRAM_Init(void)
 {
 	uint8_t sdramstatus = SDRAM_OK;
-
-	/*	uint32_t *erasebuffer;
-	uint32_t BufAddress;
-	uint32_t RAMAddress = 0;
-
-	 place for custom code
-	// Erase the memory to 0
-	erasebuffer = (uint32_t *) malloc(1000);
-
-	BufAddress = (uint32_t) &erasebuffer;
-
-	// Fill the buffer with zeros
-	for (int i = 0; i < 1000; i++)
-		*(erasebuffer++) = 0;
-
-	// Try to write the buffer to SDRAM
-	while (RAMAddress < (SDRAM_DISK_SIZE - 1000)) {
-		if ((BSP_SDRAM_WriteData((SDRAM_DISK_ADDR + RAMAddress),
-				(uint32_t *) BufAddress, 1000)) == HAL_OK) {
-			RAMAddress += 1000;
-		} else {
-			RAMAddress = SDRAM_DISK_SIZE;
-			sdramstatus = SDRAM_ERROR;
-		}
-	 }*/
 
   return sdramstatus;
 }

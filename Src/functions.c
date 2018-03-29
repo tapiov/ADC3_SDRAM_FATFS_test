@@ -249,7 +249,31 @@ void DirList(void) {
 	res = f_mount(&fs, "", 1);
 	if (res == FR_OK) {
 		strcpy(buff, "1://");
+
+		// File list
 		res = scan_files(buff);
+
+		// Disk free space
+		DWORD fre_clust, fre_sect, tot_sect;
+		FATFS *fsp;
+
+		// Get volume information and free clusters of drive 1
+		res = f_getfree(buff, &fre_clust, &fsp);
+		if (res) {
+			printf("Error: Filesystem free space check failed \r\n");
+			_Error_Handler(__FILE__, __LINE__);
+		}
+
+		// Get total sectors and free sectors
+		tot_sect = (fsp->n_fatent - 2) * fsp->csize;
+		fre_sect = fre_clust * fsp->csize;
+
+		// Print the free space (assuming 512 bytes/sector)
+		printf(
+				"%10lu KiB total drive space.\n%10lu KiB available (%.2f\%%). \n",
+				tot_sect / 2, fre_sect / 2,
+				(((float) (fre_sect)) / ((float) (tot_sect)) * 100.0));
+
 	} else {
 		printf("Error: Filesystem mount failed \r\n");
 		_Error_Handler(__FILE__, __LINE__);

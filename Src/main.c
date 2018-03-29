@@ -46,13 +46,14 @@
  ******************************************************************************
  */
 /* Includes ------------------------------------------------------------------*/
+
+/* USER CODE BEGIN Includes */
 #include "main.h"
 #include "stm32f7xx_hal.h"
 #include "fatfs.h"
 #include "usb_device.h"
 #include "usbd_cdc_if.h"
 
-/* USER CODE BEGIN Includes */
 
 #include "sdram_diskio.h"
 #include "dwt_stm32_delay.h"
@@ -83,15 +84,15 @@ SDRAM_HandleTypeDef hsdram1;
 
 USBD_HandleTypeDef husbd;
 
+/* USER CODE BEGIN PV */
+/* Private variables ---------------------------------------------------------*/
+
 FATFS SDRAMFatFs;
 FIL MyFile;
 char SDRAMPath[4]; /* SDRAM card logical drive path */
 uint8_t workBuffer[_MAX_SS];
 
 const Diskio_drvTypeDef SDRAMDISK_Driver;
-
-/* USER CODE BEGIN PV */
-/* Private variables ---------------------------------------------------------*/
 
 /* USER CODE END PV */
 
@@ -269,6 +270,8 @@ int main(void) {
 			}
 		}
 	}
+
+	DirList();
 
 	char Arg[30];
 	char Cmd[30];
@@ -1215,10 +1218,7 @@ void _Error_Handler(char *file, int line) {
 	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 
-	printf("Error file = %s Line = %d", (char *) file, (int) line);
-
-	while (1) {
-	}
+	printf("Error file = %s Line = %d", file, line);
 
 	/* USER CODE END Error_Handler_Debug */
 }

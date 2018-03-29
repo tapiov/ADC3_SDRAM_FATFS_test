@@ -53,11 +53,11 @@
 extern "C" {
 #endif
 
+/* USER CODE BEGIN Includes */
+
 #include "ff.h"
 #include "ff_gen_drv.h"
 #include "sdram_diskio.h" /* defines SDRAMDISK_Driver as external */
-
-/* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
 
