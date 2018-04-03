@@ -1,8 +1,7 @@
 /**
   ******************************************************************************
-  * @file           : usb_device.h
-  * @version        : v1.0_Cube
-  * @brief          : Header for usb_device.c file.
+  * File Name          : freertos.c
+  * Description        : Code for freertos applications
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -47,68 +46,30 @@
   ******************************************************************************
   */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_DEVICE__H__
-#define __USB_DEVICE__H__
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f7xx.h"
-#include "stm32f7xx_hal.h"
-#include "usbd_def.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
-/* USER CODE BEGIN INCLUDE */
+/* USER CODE BEGIN Includes */     
 
-/* USER CODE END INCLUDE */
+/* USER CODE END Includes */
 
-/** @addtogroup USBD_OTG_DRIVER
-  * @{
-  */
+/* Variables -----------------------------------------------------------------*/
 
-/** @defgroup USBD_DEVICE USBD_DEVICE
-  * @brief Device file for Usb otg low level driver.
-  * @{
-  */
+/* USER CODE BEGIN Variables */
 
-/** @defgroup USBD_DEVICE_Exported_Variables USBD_DEVICE_Exported_Variables
-  * @brief Public variables.
-  * @{
-  */
+/* USER CODE END Variables */
 
-/** USB device core handle. */
-extern USBD_HandleTypeDef hUsbDeviceHS;
+/* Function prototypes -------------------------------------------------------*/
 
-/**
-  * @}
-  */
+/* USER CODE BEGIN FunctionPrototypes */
 
-/** @defgroup USBD_DEVICE_Exported_FunctionsPrototype USBD_DEVICE_Exported_FunctionsPrototype
-  * @brief Declaration of public functions for Usb device.
-  * @{
-  */
+/* USER CODE END FunctionPrototypes */
 
-/** USB Device initialization function. */
-void MX_USB_DEVICE_Init(void);
+/* Hook prototypes */
 
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __USB_DEVICE__H__ */
+/* USER CODE BEGIN Application */
+     
+/* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

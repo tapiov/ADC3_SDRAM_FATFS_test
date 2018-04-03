@@ -37,22 +37,24 @@
 
 #ifdef __cplusplus
  extern "C" {
-#endif 
+#endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
 #include "main.h"
+
+#include "cmsis_os.h"
+#include "fatfs.h"
+#include "usb_host.h"
+
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 
-void SVC_Handler(void);
-void PendSV_Handler(void);
 void SysTick_Handler(void);
-void DMA1_Stream1_IRQHandler(void);
-void DMA1_Stream4_IRQHandler(void);
 void TIM1_UP_TIM10_IRQHandler(void);
+void DMA2_Stream0_IRQHandler(void);
 void OTG_HS_IRQHandler(void);
 
 #ifdef __cplusplus

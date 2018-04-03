@@ -11,7 +11,31 @@
 #include <ctype.h>
 
 #include "main.h"
-#include "dwt_stm32_delay.h"
+
+#include "stm32f7xx_hal.h"
+#include "cmsis_os.h"
+#include "fatfs.h"
+#include "usb_host.h"
+
+#include "stm32746g_discovery.h"
+#include "stm32746g_discovery_lcd.h"
+
+ADC_HandleTypeDef hadc3;
+DMA_HandleTypeDef hdma_adc3;
+
+CRC_HandleTypeDef hcrc;
+
+DMA2D_HandleTypeDef hdma2d;
+
+I2C_HandleTypeDef hi2c3;
+
+LTDC_HandleTypeDef hltdc;
+
+UART_HandleTypeDef huart1;
+
+DMA_HandleTypeDef hdma_memtomem_dma2_stream2;
+DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
+SDRAM_HandleTypeDef hsdram1;
 
 void initArray(Array *a, size_t initialSize) {
 	a->array = (uint16_t *) malloc(initialSize * sizeof(uint16_t));
@@ -98,16 +122,16 @@ void CountDown(uint32_t millisecs) {
 	InitScreen(LCD_COLOR_BLACK, LCD_COLOR_WHITE);
 
 	LCDWrite(5, " ");
-	DWT_Delay_us(1000);
+	HAL_Delay(1);
 
 	LCDWrite(5, "Starting in 3... ");
-	DWT_Delay_us(millisecs * 1000);
+	HAL_Delay(millisecs);
 
 	LCDWrite(5, "Starting in 2... ");
-	DWT_Delay_us(millisecs * 1000);
+	HAL_Delay(millisecs);
 
 	LCDWrite(5, "Starting in 1... ");
-	DWT_Delay_us(millisecs * 1000);
+	HAL_Delay(millisecs);
 
 	InitScreen(LCD_COLOR_BLACK, LCD_COLOR_RED);
 	LCDWrite(5, "GO!");
@@ -152,7 +176,8 @@ void SamplePoints(Array *Data, uint32_t NoOfPoints, uint32_t Period_us) {
 	// Measure NoOfPoints values (f.ex. 19200)
 	for (i = 0; i < NoOfPoints; i++) {
 		Data->array[i] = (uint16_t) HAL_ADC_GetValue(&hadc3);
-		DWT_Delay_us(Period_us);
+		// Produce Period_us delay
+		//DWT_Delay_us(Period_us);
 	}
 
 	InitScreen(LCD_COLOR_BLACK, LCD_COLOR_WHITE);
@@ -248,7 +273,7 @@ void DirList(void) {
 	// Should be mounted already
 	res = f_mount(&fs, "", 1);
 	if (res == FR_OK) {
-		strcpy(buff, "1://");
+		strcpy(buff, "");
 
 		// File list
 		res = scan_files(buff);

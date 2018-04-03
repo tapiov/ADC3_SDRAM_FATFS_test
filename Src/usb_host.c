@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file           : usbd_cdc_if.h
-  * @version        : v1.0_Cube
-  * @brief          : Header for usbd_cdc_if.c file.
+  * @file            : usb_host.c
+  * @version         : v1.0_Cube
+  * @brief           : This file implements the USB Host
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -47,112 +47,106 @@
   ******************************************************************************
   */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USBD_CDC_IF_H__
-#define __USBD_CDC_IF_H__
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_cdc.h"
 
-/* USER CODE BEGIN INCLUDE */
+#include "usb_host.h"
+#include "usbh_core.h"
+#include "usbh_msc.h"
 
-/* USER CODE END INCLUDE */
+/* USER CODE BEGIN Includes */
 
-/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
-  * @brief For Usb device.
-  * @{
+/* USER CODE END Includes */
+
+/* USER CODE BEGIN PV */
+/* Private variables ---------------------------------------------------------*/
+
+/* USER CODE END PV */
+
+/* USER CODE BEGIN PFP */
+/* Private function prototypes -----------------------------------------------*/
+
+/* USER CODE END PFP */
+
+/* USB Host core handle declaration */
+USBH_HandleTypeDef hUsbHostHS;
+ApplicationTypeDef Appli_state = APPLICATION_IDLE;
+
+/*
+ * -- Insert your variables declaration here --
+ */
+/* USER CODE BEGIN 0 */
+
+/* USER CODE END 0 */
+
+/*
+ * user callback declaration
+ */
+static void USBH_UserProcess(USBH_HandleTypeDef *phost, uint8_t id);
+
+/*
+ * -- Insert your external function declaration here --
+ */
+/* USER CODE BEGIN 1 */
+
+/* USER CODE END 1 */
+
+/**
+  * Init USB host library, add supported class and start the library
+  * @retval None
   */
+void MX_USB_HOST_Init(void)
+{
+  /* USER CODE BEGIN USB_HOST_Init_PreTreatment */
   
-/** @defgroup USBD_CDC_IF USBD_CDC_IF
-  * @brief Usb VCP device module
-  * @{
-  */ 
+  /* USER CODE END USB_HOST_Init_PreTreatment */
+  
+  /* Init host Library, add supported class and start the library. */
+  USBH_Init(&hUsbHostHS, USBH_UserProcess, HOST_HS);
 
-/** @defgroup USBD_CDC_IF_Exported_Defines USBD_CDC_IF_Exported_Defines
-  * @brief Defines.
-  * @{
-  */
-/* USER CODE BEGIN EXPORTED_DEFINES */
+  USBH_RegisterClass(&hUsbHostHS, USBH_MSC_CLASS);
 
-/* USER CODE END EXPORTED_DEFINES */
+  USBH_Start(&hUsbHostHS);
 
-/**
-  * @}
-  */
-
-/** @defgroup USBD_CDC_IF_Exported_Types USBD_CDC_IF_Exported_Types
-  * @brief Types.
-  * @{
-  */
-
-/* USER CODE BEGIN EXPORTED_TYPES */
-
-/* USER CODE END EXPORTED_TYPES */
-
-/**
-  * @}
-  */
-
-/** @defgroup USBD_CDC_IF_Exported_Macros USBD_CDC_IF_Exported_Macros
-  * @brief Aliases.
-  * @{
-  */
-
-/* USER CODE BEGIN EXPORTED_MACRO */
-
-/* USER CODE END EXPORTED_MACRO */
-
-/**
-  * @}
-  */
-
-/** @defgroup USBD_CDC_IF_Exported_Variables USBD_CDC_IF_Exported_Variables
-  * @brief Public variables.
-  * @{
-  */
-
-/** CDC Interface callback. */
-extern USBD_CDC_ItfTypeDef USBD_Interface_fops_HS;
-
-/* USER CODE BEGIN EXPORTED_VARIABLES */
-
-/* USER CODE END EXPORTED_VARIABLES */
-
-/**
-  * @}
-  */
-
-/** @defgroup USBD_CDC_IF_Exported_FunctionsPrototype USBD_CDC_IF_Exported_FunctionsPrototype
-  * @brief Public functions declaration.
-  * @{
-  */
-
-uint8_t CDC_Transmit_HS(uint8_t* Buf, uint16_t Len);
-
-/* USER CODE BEGIN EXPORTED_FUNCTIONS */
-
-/* USER CODE END EXPORTED_FUNCTIONS */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-#ifdef __cplusplus
+  /* USER CODE BEGIN USB_HOST_Init_PostTreatment */
+  
+  /* USER CODE END USB_HOST_Init_PostTreatment */
 }
-#endif
 
-#endif /* __USBD_CDC_IF_H__ */
+/*
+ * user callback definition
+ */
+static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
+{
+  /* USER CODE BEGIN CALL_BACK_1 */
+  switch(id)
+  {
+  case HOST_USER_SELECT_CONFIGURATION:
+  break;
+
+  case HOST_USER_DISCONNECTION:
+  Appli_state = APPLICATION_DISCONNECT;
+  break;
+
+  case HOST_USER_CLASS_ACTIVE:
+  Appli_state = APPLICATION_READY;
+  break;
+
+  case HOST_USER_CONNECTION:
+  Appli_state = APPLICATION_START;
+  break;
+
+  default:
+  break;
+  }
+  /* USER CODE END CALL_BACK_1 */
+}
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

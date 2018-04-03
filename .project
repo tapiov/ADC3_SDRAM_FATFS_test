@@ -112,7 +112,12 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Middlewares/USB_Device_Library</name>
+			<name>Middlewares/FreeRTOS</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/USB_Host_Library</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -187,6 +192,11 @@
 			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_gpio.c</location>
 		</link>
 		<link>
+			<name>Drivers/STM32F7xx_HAL_Driver/stm32f7xx_hal_hcd.c</name>
+			<type>1</type>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_hcd.c</location>
+		</link>
+		<link>
 			<name>Drivers/STM32F7xx_HAL_Driver/stm32f7xx_hal_i2c.c</name>
 			<type>1</type>
 			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_i2c.c</location>
@@ -205,16 +215,6 @@
 			<name>Drivers/STM32F7xx_HAL_Driver/stm32f7xx_hal_ltdc_ex.c</name>
 			<type>1</type>
 			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_ltdc_ex.c</location>
-		</link>
-		<link>
-			<name>Drivers/STM32F7xx_HAL_Driver/stm32f7xx_hal_pcd.c</name>
-			<type>1</type>
-			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd.c</location>
-		</link>
-		<link>
-			<name>Drivers/STM32F7xx_HAL_Driver/stm32f7xx_hal_pcd_ex.c</name>
-			<type>1</type>
-			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_pcd_ex.c</location>
 		</link>
 		<link>
 			<name>Drivers/STM32F7xx_HAL_Driver/stm32f7xx_hal_pwr.c</name>
@@ -257,6 +257,11 @@
 			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_uart.c</location>
 		</link>
 		<link>
+			<name>Drivers/STM32F7xx_HAL_Driver/stm32f7xx_hal_wwdg.c</name>
+			<type>1</type>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_wwdg.c</location>
+		</link>
+		<link>
 			<name>Drivers/STM32F7xx_HAL_Driver/stm32f7xx_ll_fmc.c</name>
 			<type>1</type>
 			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_ll_fmc.c</location>
@@ -287,24 +292,69 @@
 			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FatFs/src/option/syscall.c</location>
 		</link>
 		<link>
-			<name>Middlewares/USB_Device_Library/usbd_cdc.c</name>
+			<name>Middlewares/FreeRTOS/cmsis_os.c</name>
 			<type>1</type>
-			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c</location>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c</location>
 		</link>
 		<link>
-			<name>Middlewares/USB_Device_Library/usbd_core.c</name>
+			<name>Middlewares/FreeRTOS/croutine.c</name>
 			<type>1</type>
-			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c</location>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/croutine.c</location>
 		</link>
 		<link>
-			<name>Middlewares/USB_Device_Library/usbd_ctlreq.c</name>
+			<name>Middlewares/FreeRTOS/event_groups.c</name>
 			<type>1</type>
-			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c</location>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c</location>
 		</link>
 		<link>
-			<name>Middlewares/USB_Device_Library/usbd_ioreq.c</name>
+			<name>Middlewares/FreeRTOS/heap_3.c</name>
 			<type>1</type>
-			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c</location>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_3.c</location>
+		</link>
+		<link>
+			<name>Middlewares/FreeRTOS/heap_4.c</name>
+			<type>1</type>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c</location>
+		</link>
+		<link>
+			<name>Middlewares/FreeRTOS/list.c</name>
+			<type>1</type>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/list.c</location>
+		</link>
+		<link>
+			<name>Middlewares/FreeRTOS/port.c</name>
+			<type>1</type>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/port.c</location>
+		</link>
+		<link>
+			<name>Middlewares/FreeRTOS/portmacro.h</name>
+			<type>1</type>
+			<location>C:/Users/tapio/STM32Cube/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h</location>
+		</link>
+		<link>
+			<name>Middlewares/FreeRTOS/queue.c</name>
+			<type>1</type>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/queue.c</location>
+		</link>
+		<link>
+			<name>Middlewares/FreeRTOS/tasks.c</name>
+			<type>1</type>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/tasks.c</location>
+		</link>
+		<link>
+			<name>Middlewares/FreeRTOS/timers.c</name>
+			<type>1</type>
+			<location>C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/timers.c</location>
+		</link>
+		<link>
+			<name>Middlewares/USB_Host_Library/Core</name>
+			<type>2</type>
+			<location>C:/Users/tapio/STM32Cube/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Host_Library/Core</location>
+		</link>
+		<link>
+			<name>Middlewares/USB_Host_Library/MSC</name>
+			<type>2</type>
+			<location>C:/Users/tapio/STM32Cube/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Host_Library/Class/MSC</location>
 		</link>
 	</linkedResources>
 </projectDescription>

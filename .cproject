@@ -3,7 +3,9 @@
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="com.atollic.truestudio.exe.debug.1518366166">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.atollic.truestudio.exe.debug.1518366166" moduleId="org.eclipse.cdt.core.settings" name="Debug">
-				<externalSettings/>
+				<externalSettings>
+					<externalSetting/>
+				</externalSettings>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -43,15 +45,17 @@
 							<tool command="arm-atollic-eabi-gcc -c " commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX} ${OUTPUT} ${INPUTS}" id="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc">
 								<option id="com.atollic.truestudio.gcc.directories.select.330946435" name="Include path" superClass="com.atollic.truestudio.gcc.directories.select" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../Inc"/>
-									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\Repository\STM32Cube_FW_F7_V1.9.0\Drivers\BSP\STM32746G-Discovery&quot;"/>
 									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\Repository\STM32Cube_FW_F7_V1.9.0\Drivers\BSP\STM32746G-Discovery&quot;"/>
+									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/CMSIS/Device/ST/STM32F7xx/Include"/>
 									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FatFs/src"/>
-									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Drivers/CMSIS/Include"/>
-									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Device_Library/Core/Inc"/>
-									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\Repository\STM32Cube_FW_F7_V1.9.0\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
-									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
+									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/include"/>
+									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS"/>
+									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\STM32Cube_FW_F7_V1.9.0\Middlewares\ST\STM32_USB_Host_Library\Class\MSC\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\STM32Cube_FW_F7_V1.9.0\Middlewares\ST\STM32_USB_Host_Library\Core\Inc&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=__attribute__((weak))"/>
@@ -77,8 +81,10 @@
 								<option id="com.atollic.truestudio.common_options.target.instr_set.566688004" name="Instruction set" superClass="com.atollic.truestudio.common_options.target.instr_set" useByScannerDiscovery="false" value="com.atollic.truestudio.common_options.target.instr_set.thumb2" valueType="enumerated"/>
 								<option id="com.atollic.truestudio.ld.general.scriptfile.1350476438" name="Linker script" superClass="com.atollic.truestudio.ld.general.scriptfile" useByScannerDiscovery="false" value="../STM32F746NG_FLASH.ld" valueType="string"/>
 								<option id="com.atollic.truestudio.ld.optimization.do_garbage.1816004776" name="Dead code removal " superClass="com.atollic.truestudio.ld.optimization.do_garbage" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="com.atollic.truestudio.ld.libraries.list.848669414" name="Libraries" superClass="com.atollic.truestudio.ld.libraries.list" useByScannerDiscovery="false"/>
+								<option id="com.atollic.truestudio.ld.libraries.list.848669414" name="Libraries" superClass="com.atollic.truestudio.ld.libraries.list" useByScannerDiscovery="false" valueType="libs"/>
 								<option id="com.atollic.truestudio.ld.libraries.searchpath.1273009461" name="Library search path" superClass="com.atollic.truestudio.ld.libraries.searchpath" useByScannerDiscovery="false" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Debug/Middlewares/USB_Host_Library/Core/Src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/Debug/Middlewares/USB_Host_Library/MSC/Src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADC3_SDRAM_FATFS_test/Drivers/STM32F7xx_HAL_Driver}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADC3_SDRAM_FATFS_test/Drivers/STM32F7xx_HAL_Driver/Inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADC3_SDRAM_FATFS_test/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy}&quot;"/>
@@ -131,7 +137,7 @@
 					<sourceEntries>
 						<entry excluding="BSP/STM32746G-Discovery/stm32746g_discovery_sdram.c|BSP/STM32746G-Discovery/stm32746g_discovery_sd.c|BSP/STM32746G-Discovery/stm32746g_discovery_qspi.c|BSP/STM32746G-Discovery/stm32746g_discovery_camera.c|BSP/STM32746G-Discovery/stm32746g_discovery_audio.c|BSP/STM32F7xx_Nucleo_144|BSP/STM32F769I-Discovery|BSP/STM32F769I_EVAL|BSP/STM32F723E-Discovery|BSP/STM32756G_EVAL|BSP/Adafruit_Shield" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
+						<entry excluding="FreeRTOS/heap_4.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
 					</sourceEntries>
@@ -198,10 +204,15 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADC3_SDRAM_FATFS_test/Utilities/Fonts}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADC3_SDRAM_FATFS_test/Utilities/Log}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADC3_SDRAM_FATFS_test/Middlewares/LwIP}&quot;"/>
-									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Device_Library/Core/Inc"/>
+									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Host_Library/Core/Inc"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\Repository\STM32Cube_FW_F7_V1.9.0\Drivers\BSP\STM32746G-Discovery&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\Repository\STM32Cube_FW_F7_V1.9.0\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
-									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
+									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1"/>
+									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/ST/STM32_USB_Host_Library/Class/MSC/Inc"/>
+									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/include"/>
+									<listOptionValue builtIn="false" value="C:/Users/tapio/STM32Cube/Repository/STM32Cube_FW_F7_V1.9.0/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\STM32Cube_FW_F7_V1.9.0\Middlewares\ST\STM32_USB_Host_Library\Class\MSC\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\STM32Cube_FW_F7_V1.9.0\Middlewares\ST\STM32_USB_Host_Library\Core\Inc&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__weak=__attribute__((weak))"/>
@@ -231,6 +242,10 @@
 								<option id="com.atollic.truestudio.ld.libraries.searchpath.1273009461" name="Library search path" superClass="com.atollic.truestudio.ld.libraries.searchpath" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADC3_SDRAM_FATFS_test/Drivers/STM32F7xx_HAL_Driver/Inc}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADC3_SDRAM_FATFS_test/Drivers/STM32F7xx_HAL_Driver/Inc/Legacy}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ADC3_SDRAM_FATFS_test/Drivers/BSP/STM32746G-Discovery}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\STM32Cube_FW_F7_V1.9.0\Middlewares\ST\STM32_USB_Host_Library\Class\MSC\Src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\STM32Cube_FW_F7_V1.9.0\Middlewares\ST\STM32_USB_Host_Library\Core\Src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\tapio\STM32Cube\STM32Cube_FW_F7_V1.9.0\Middlewares\ST\STM32_USB_Host_Library\Core\Inc&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.ld.misc.linkerflags.1948405714" name="Other options" superClass="com.atollic.truestudio.ld.misc.linkerflags" value="" valueType="string"/>
 								<option id="com.atollic.truestudio.common_options.target.fpu.829683864" name="Floating point" superClass="com.atollic.truestudio.common_options.target.fpu" value="com.atollic.truestudio.common_options.target.fpu.hard" valueType="enumerated"/>
@@ -278,7 +293,7 @@
 					<sourceEntries>
 						<entry excluding="BSP/STM32746G-Discovery/stm32746g_discovery_sdram.c|BSP/STM32746G-Discovery/stm32746g_discovery_sd.c|BSP/STM32746G-Discovery/stm32746g_discovery_qspi.c|BSP/STM32746G-Discovery/stm32746g_discovery_camera.c|BSP/STM32746G-Discovery/stm32746g_discovery_audio.c|BSP/STM32F7xx_Nucleo_144|BSP/STM32F769I-Discovery|BSP/STM32F769I_EVAL|BSP/STM32F723E-Discovery|BSP/STM32756G_EVAL|BSP/Adafruit_Shield" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
+						<entry excluding="FreeRTOS/heap_4.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
 					</sourceEntries>
