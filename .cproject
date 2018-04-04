@@ -137,7 +137,7 @@
 					<sourceEntries>
 						<entry excluding="BSP/STM32746G-Discovery/stm32746g_discovery_sdram.c|BSP/STM32746G-Discovery/stm32746g_discovery_sd.c|BSP/STM32746G-Discovery/stm32746g_discovery_qspi.c|BSP/STM32746G-Discovery/stm32746g_discovery_camera.c|BSP/STM32746G-Discovery/stm32746g_discovery_audio.c|BSP/STM32F7xx_Nucleo_144|BSP/STM32F769I-Discovery|BSP/STM32F769I_EVAL|BSP/STM32F723E-Discovery|BSP/STM32756G_EVAL|BSP/Adafruit_Shield" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
-						<entry excluding="FreeRTOS/heap_4.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
+						<entry excluding="FreeRTOS/heap_3.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
 					</sourceEntries>
@@ -293,7 +293,7 @@
 					<sourceEntries>
 						<entry excluding="BSP/STM32746G-Discovery/stm32746g_discovery_sdram.c|BSP/STM32746G-Discovery/stm32746g_discovery_sd.c|BSP/STM32746G-Discovery/stm32746g_discovery_qspi.c|BSP/STM32746G-Discovery/stm32746g_discovery_camera.c|BSP/STM32746G-Discovery/stm32746g_discovery_audio.c|BSP/STM32F7xx_Nucleo_144|BSP/STM32F769I-Discovery|BSP/STM32F769I_EVAL|BSP/STM32F723E-Discovery|BSP/STM32756G_EVAL|BSP/Adafruit_Shield" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
-						<entry excluding="FreeRTOS/heap_4.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
+						<entry excluding="FreeRTOS/heap_3.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
 					</sourceEntries>

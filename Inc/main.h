@@ -57,6 +57,7 @@
 
 // LoadCell_STM32_RAM v2 main header
 // (C) Tapio Valli 2018-02-20
+
 #include <stdio.h>
 #include <errno.h>
 #include <stdint.h>

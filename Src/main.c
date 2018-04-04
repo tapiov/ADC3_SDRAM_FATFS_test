@@ -54,6 +54,9 @@
 
 /* USER CODE BEGIN Includes */
 
+// LoadCell_STM32_RAM v2 main
+// (C) Tapio Valli 2018-02-20
+
 #include "stm32746g_discovery.h"
 #include "stm32746g_discovery_lcd.h"
 
@@ -159,51 +162,52 @@ extern void DirList(void);
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
+	/* USER CODE BEGIN 1 */
 
 	FRESULT res; /* FatFs function common result code */
 	uint32_t byteswritten, bytesread; /* File write/read counts */
 	uint8_t wtext[] = "This is STM32 working with FatFs"; /* File write buffer */
 	uint8_t rtext[100]; /* File read buffer */
 
-  /* USER CODE END 1 */
+	/* USER CODE END 1 */
 
-  /* Enable I-Cache-------------------------------------------------------------*/
-  SCB_EnableICache();
+	/* Enable I-Cache-------------------------------------------------------------*/
+	SCB_EnableICache();
 
-  /* Enable D-Cache-------------------------------------------------------------*/
-  SCB_EnableDCache();
+	/* Enable D-Cache-------------------------------------------------------------*/
+	SCB_EnableDCache();
 
-  /* MCU Configuration----------------------------------------------------------*/
+	/* MCU Configuration----------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-  /* USER CODE BEGIN Init */
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+	/* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+	/* Configure the system clock */
+	SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+	/* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
+	/* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_FMC_Init();
-  MX_ADC3_Init();
-  MX_USART1_UART_Init();
-  MX_LTDC_Init();
-  MX_I2C3_Init();
-  MX_DMA2D_Init();
-  MX_CRC_Init();
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_DMA_Init();
+	MX_FMC_Init();
+	MX_ADC3_Init();
+	MX_USART1_UART_Init();
+	MX_LTDC_Init();
+	MX_I2C3_Init();
+	MX_DMA2D_Init();
+	MX_CRC_Init();
 	MX_WWDG_Init();
-  MX_TIM2_Init();
-  MX_TIM3_Init();
-  /* USER CODE BEGIN 2 */
+	MX_TIM2_Init();
+	MX_TIM3_Init();
+
+	/* USER CODE BEGIN 2 */
 
 	// Start SDRAM
 	FMC_SDRAM_CommandTypeDef hsdram1Command;
@@ -227,8 +231,6 @@ int main(void)
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
 	BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
 	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-
-	/* USER CODE START 2 */
 
 	/*##-1- Link the SDRAM disk I/O driver ##################################*/
 	if (FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMPath) == 0) {
@@ -377,6 +379,7 @@ int main(void)
 		free(word_array);
 
 		// Branch based on command
+
 		// meas: Sample and plot a data set
 		if ((strcmp(Cmd, "meas") == 0) && (n == 1)) {
 
@@ -418,6 +421,7 @@ int main(void)
 		else if ((strcmp(Cmd, "setcount") == 0) && (n == 2)) {
 			Count_ms = (uint32_t) strtol(Arg, NULL, 10);
 		}
+
 		// dir: Print file listing
 		else if ((strcmp(Cmd, "dir") == 0) && (n == 1)) {
 			DirList();
@@ -443,50 +447,135 @@ int main(void)
 
 	printf("Exit. Data freed. Stop. \r\n");
 
-  /* USER CODE END 2 */
+	/* USER CODE BEGIN RTOS_MUTEX */
+	/* add mutexes, ... */
+	/* USER CODE END RTOS_MUTEX */
 
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
+	/* USER CODE BEGIN RTOS_SEMAPHORES */
+	/* add semaphores, ... */
+	/* USER CODE END RTOS_SEMAPHORES */
 
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
+	/* USER CODE BEGIN RTOS_TIMERS */
+	/* start timers, add new ones, ... */
+	/* USER CODE END RTOS_TIMERS */
 
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
+	/* Create the thread(s) */
+	/* definition and creation of defaultTask */
+	osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+	defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* Create the thread(s) */
-  /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+	/* USER CODE BEGIN RTOS_THREADS */
+	/* add threads, ... */
+	/* USER CODE END RTOS_THREADS */
 
-  /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
+	/* USER CODE BEGIN RTOS_QUEUES */
+	/* add queues, ... */
+	/* USER CODE END RTOS_QUEUES */
 
 
-  /* Start scheduler */
-  osKernelStart();
+	/* Start scheduler */
+	osKernelStart();
 
-  /* We should never get here as control is now taken by the scheduler */
+	/* We should never get here as control is now taken by the scheduler */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
 	while (1) {
 
-  /* USER CODE END WHILE */
+	}
 
-  /* USER CODE BEGIN 3 */
+}
+
+/* StartDefaultTask function */
+void StartDefaultTask(void const * argument) {
+	/* init code for FATFS */
+	MX_FATFS_Init();
+
+	/* init code for USB_HOST */
+	MX_USB_HOST_Init();
+
+	/* USER CODE BEGIN 5 */
+	/* Infinite loop */
+	for (;;) {
+		osDelay(1);
+		printf("Looping OS \r\n");
 
 	}
-  /* USER CODE END 3 */
+}
 
+/* USER CODE END 2 */
+
+/* USER CODE BEGIN 4 */
+
+int __io_putchar(int ch) {
+	uint8_t c[1];
+	c[0] = ch & 0x00FF;
+	HAL_UART_Transmit(&huart1, &*c, 1, 10);
+	return ch;
+}
+
+int _write(int file, char *ptr, int len) {
+	int DataIdx;
+	for (DataIdx = 0; DataIdx < len; DataIdx++) {
+		__io_putchar(*ptr++);
+	}
+	return len;
+}
+
+int __io_getchar(void) {
+	HAL_StatusTypeDef Status = HAL_BUSY;
+	uint8_t Data;
+
+	while (Status != HAL_OK)
+		Status = HAL_UART_Receive(&huart1, &Data, 1, 10);
+
+	return (Data);
+}
+
+int _read(int file, char *ptr, int len) {
+	int DataIdx;
+	for (DataIdx = 0; DataIdx < len; DataIdx++) {
+		*ptr++ = __io_getchar();
+	}
+	return len;
+}
+
+// FreeRTOS heap4 malloc
+// https://embeddedartistry.com/blog/2018/1/15/implementing-malloc-with-freertos
+
+void* malloc(size_t size) {
+	void* ptr = NULL;
+
+	if (size > 0) {
+		// We simply wrap the FreeRTOS call into a standard form
+		ptr = pvPortMalloc(size);
+	} // else NULL if there was an error
+
+	return ptr;
+}
+
+void free(void* ptr) {
+	if (ptr) {
+		// We simply wrap the FreeRTOS call into a standard form
+		vPortFree(ptr);
+	}
+}
+
+/* USER CODE END 4 */
+
+/**
+ * @brief  This function is executed in case of error occurrence.
+ * @param  file: The file name as string.
+ * @param  line: The line in file as a number.
+ * @retval None
+ */
+void _Error_Handler(char *file, int line) {
+	/* USER CODE BEGIN Error_Handler_Debug */
+	/* User can add his own implementation to report the HAL error return state */
+
+	printf("\r\nError file = %s Line = %d \r\n", file, line);
+
+	/* USER CODE END Error_Handler_Debug */
 }
 
 /**
@@ -1303,61 +1392,6 @@ static void MX_GPIO_Init(void)
 
 }
 
-/* USER CODE BEGIN 4 */
-
-int __io_putchar(int ch) {
-	uint8_t c[1];
-	c[0] = ch & 0x00FF;
-	HAL_UART_Transmit(&huart1, &*c, 1, 10);
-	return ch;
-}
-
-int _write(int file, char *ptr, int len) {
-	int DataIdx;
-	for (DataIdx = 0; DataIdx < len; DataIdx++) {
-		__io_putchar(*ptr++);
-	}
-	return len;
-}
-
-int __io_getchar(void) {
-	HAL_StatusTypeDef Status = HAL_BUSY;
-	uint8_t Data;
-
-	while (Status != HAL_OK)
-		Status = HAL_UART_Receive(&huart1, &Data, 1, 10);
-
-	return (Data);
-}
-
-int _read(int file, char *ptr, int len) {
-	int DataIdx;
-	for (DataIdx = 0; DataIdx < len; DataIdx++) {
-		*ptr++ = __io_getchar();
-	}
-	return len;
-}
-
-/* USER CODE END 4 */
-
-/* StartDefaultTask function */
-void StartDefaultTask(void const * argument)
-{
-  /* init code for FATFS */
-  MX_FATFS_Init();
-
-  /* init code for USB_HOST */
-  MX_USB_HOST_Init();
-
-  /* USER CODE BEGIN 5 */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END 5 */
-}
-
 /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM1 interrupt took place, inside
@@ -1377,22 +1411,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
 
   /* USER CODE END Callback 1 */
-}
-
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @param  file: The file name as string.
-  * @param  line: The line in file as a number.
-  * @retval None
-  */
-void _Error_Handler(char *file, int line)
-{
-  /* USER CODE BEGIN Error_Handler_Debug */
-	/* User can add his own implementation to report the HAL error return state */
-
-	printf("Error file = %s Line = %d", file, line);
-
-  /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
