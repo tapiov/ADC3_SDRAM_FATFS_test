@@ -37,22 +37,116 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream2;
 DMA_HandleTypeDef hdma_memtomem_dma2_stream1;
 SDRAM_HandleTypeDef hsdram1;
 
+// Mod from https://stackoverflow.com/questions/23191203/convert-float-to-string-without-sprintf
+// prints a number with 2 digits following the decimal place
+// creates the string backwards, before printing it character-by-character from
+// the end to the start
+//
+// Usage: myPrintf(270.458)
+//  Output: 270.45
+char * myPrintf(float fVal) {
+	static char result[10];
+	uint8_t dVal, dec, i;
+
+	fVal += 0.005;   // added after a comment from Matt McNabb, see below.
+
+	dVal = fVal;
+	dec = (uint8_t) (fVal * 100) % 100;
+
+	memset(result, 0, 10);
+	result[0] = (dec % 10) + '0';
+	result[1] = (dec / 10) + '0';
+	result[2] = '.';
+
+	i = 3;
+	while (dVal > 0) {
+		result[i] = (char) (dVal % 10) + '0';
+		dVal /= 10;
+		i++;
+	}
+
+	return result;
+}
+
+
 void initArray(Array *a, size_t initialSize) {
-	a->array = (uint16_t *) malloc(initialSize * sizeof(uint16_t));
+	a->array = (uint16_t *) pvPortMalloc(initialSize * sizeof(uint16_t));
 	a->used = 0;
 	a->size = initialSize;
 }
 
 void insertArray(Array *a, uint32_t newsize) {
 	a->size = newsize;
-	a->array = (uint16_t *) realloc(a->array, a->size * sizeof(uint16_t));
+	vPortFree(a->array);
+	a->array = (uint16_t *) pvPortMalloc(a->size * sizeof(uint16_t));
 	a->used = 0;
 }
 
 void freeArray(Array *a) {
-	free(a->array);
+	vPortFree(a->array);
 	a->array = NULL;
 	a->used = a->size = 0;
+}
+
+// mod from
+// https://stackoverflow.com/questions/13230253/how-do-i-parse-a-string-in-c
+char * string_parse(char * parse_string, uint8_t idx) {
+
+	char *work_string;
+	uint8_t stringArray[30];
+	static uint8_t wordArray[30];
+	uint8_t i = 0;
+	uint8_t counter = 0;
+	uint8_t argCounter = 0;
+	uint8_t wordCounter = 0;
+
+	// Let's make a copy for work
+	work_string = parse_string;
+
+	// And move it to array
+	while (*work_string != '\0') {
+		stringArray[i] = (int) *work_string;
+		i++;
+		work_string++;
+	}
+
+	// Terminate
+	stringArray[i] = '\0';
+
+	// Main function.
+	counter = 0;
+	while (stringArray[wordCounter] != '\0') {
+		// Puts first word into temporary wordArray.
+		while ((stringArray[wordCounter] != ' ')
+				&& (stringArray[wordCounter] != '\0')) {
+			wordArray[counter++] = stringArray[wordCounter++];
+		}
+		wordArray[counter] = '\0';
+
+		// Return the content of wordArray at requested index.
+		if (argCounter == idx) {
+			return wordArray;
+		} else if (argCounter > idx) {
+			// Too many arguments
+			_Error_Handler(__FILE__, __LINE__);
+		}
+
+		//Clears temporary wordArray for new use.
+		for (counter = 0; counter < 30; counter++) {
+			wordArray[counter] = '\0';
+		}
+
+		if (stringArray[wordCounter] != '\n') {
+			wordCounter++;
+		}
+
+		counter = 0;
+		argCounter++;
+	}
+
+	// If we return here. the parse_string had less arguments as requested
+	// In that case, return empty string
+	return '\0';
 }
 
 size_t string_parser(char *input, char ***word_array) {
@@ -169,15 +263,39 @@ FRESULT scan_files(char* path
 }
 
 void SamplePoints(Array *Data, uint32_t NoOfPoints, uint32_t Period_us) {
+
+	TIM_HandleTypeDef htim2;
 	uint32_t i;
 
 	HAL_ADC_Start(&hadc3);
+	htim2.Instance = TIM2;
 
 	// Measure NoOfPoints values (f.ex. 19200)
 	for (i = 0; i < NoOfPoints; i++) {
+
+		// Set the TIM2 to zero
+		__HAL_TIM_SET_COUNTER(&htim2, 0);
+
+		// Sample ADC3[0] and store to array[i]
+		// Takes apprx 15 ADCClk cycles for 12 bits = 15 * (1/25 MHz) = 0.6 us
+		// Lets substract 1 us from Period_us to compensate for loop + conversion
 		Data->array[i] = (uint16_t) HAL_ADC_GetValue(&hadc3);
-		// Produce Period_us delay
-		//DWT_Delay_us(Period_us);
+
+		// Start TIM2
+		if ((HAL_TIM_Base_Start(&htim2)) != HAL_OK) {
+			_Error_Handler(__FILE__, __LINE__);
+		}
+
+		// Wait for Period_us-1 us
+		while ((__HAL_TIM_GET_COUNTER(&htim2)) < (Period_us - 1)) {
+			;;
+		}
+
+		// Stop TIM2
+		if ((HAL_TIM_Base_Stop(&htim2)) != HAL_OK) {
+			_Error_Handler(__FILE__, __LINE__);
+
+		}
 	}
 
 	InitScreen(LCD_COLOR_BLACK, LCD_COLOR_WHITE);
@@ -227,8 +345,8 @@ void WriteData2FS(Array *Data, uint32_t NoOfPoints, uint32_t MeasNo) {
 	// Create file for data, as meas#.txt
 
 	FRESULT res; // FatFs function common result code
-	uint32_t byteswritten, totalbytes; //File write counts
 	char buffer[1000] = " ";
+	uint32_t byteswritten, totalbytes; //File write counts
 
 	char* fname = (char *) (sprintf("meas_%lu.txt", (char *) MeasNo));
 	FIL MyFile;
@@ -295,9 +413,9 @@ void DirList(void) {
 
 		// Print the free space (assuming 512 bytes/sector)
 		printf(
-				"%10lu KiB total drive space.\n%10lu KiB available (%.2f\%%). \n",
+				"%10lu KiB total drive space.\n%10lu KiB available (%s\%%). \n",
 				tot_sect / 2, fre_sect / 2,
-				(((float) (fre_sect)) / ((float) (tot_sect)) * 100.0));
+				myPrintf(((float) (fre_sect)) / ((float) (tot_sect)) * 100.0));
 
 	} else {
 		printf("Error: Filesystem mount failed \r\n");

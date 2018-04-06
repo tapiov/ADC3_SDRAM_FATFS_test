@@ -138,7 +138,9 @@ extern void initArray(Array *a, size_t initialSize);
 extern void insertArray(Array *a, uint32_t newsize);
 extern void freeArray(Array *a);
 
+extern char * myPrintf(float f);
 extern size_t string_parser(char *input, char ***word_array);
+extern char * string_parse(char * parse_string, uint8_t idx);
 extern void PlotData(uint32_t XCoordinate, uint32_t YCoordinate);
 extern void InitScreen(uint32_t BackGroundColor, uint32_t ForeGroundColor);
 extern void LCDWrite(uint32_t Line, char Str[]);
@@ -242,7 +244,6 @@ int main(void)
 		} else {
 			printf("SDRAM FATFS mount Success 2. \r\n");
 			/*##-3- Create a FAT file system (format) on the logical drive #########*/
-			/* WARNING: Formatting the uSD card will delete all content on the device */
 			if (f_mkfs((TCHAR const*) SDRAMPath, FM_FAT32, 0, workBuffer,
 					sizeof(workBuffer)) != FR_OK) {
 				/* FatFs Format Error */
@@ -308,11 +309,14 @@ int main(void)
 
 	DirList();
 
+	char *cmdPtr;
+	char *argPtr;
+
 	char Arg[30];
 	char Cmd[30];
 	char CmdBuffer[30];
 
-	size_t n = 0;
+	uint8_t n = 0;
 	uint32_t MeasNo = 0;
 
 	uint32_t NoOfPoints = 19200;
@@ -339,9 +343,9 @@ int main(void)
 
 		printf(
 				"Ready. Settings are Points=%lu, Avg=%lu, Period_us=%lu, Count_ms=%lu. "
-						"Sampling will take apprx %f secs \r\n", NoOfPoints,
+						"Sampling will take apprx %s secs \r\n", NoOfPoints,
 				AvgSize, Period_us, Count_ms,
-				((float) (NoOfPoints * Period_us / 1000000.0)));
+				myPrintf(NoOfPoints * Period_us / 1000000));
 
 		Cmd[0] = '\0';
 		Arg[0] = '\0';
@@ -353,35 +357,59 @@ int main(void)
 
 		printf("\r\n I got %s \r\n", CmdBuffer);
 
-		// Parse command and possible numeric arg
-		char s[] = "Initial string";
-		char ** word_array = NULL;
+		// Parse and copy arg 0
+		cmdPtr = string_parse((char *) CmdBuffer, 0);
 
-		strcpy(s, CmdBuffer);
-		n = string_parser(s, &word_array);
-
-		for (size_t i = 0; i < n; i++) {
-			if (i == 0) {
-				strcpy(Cmd, word_array[i]);
-			}
-			if (i == 1) {
-				strcpy(Arg, word_array[i]);
-			}
-			if (i > 1) {
-				printf("Wrong number of arguments \r\n");
-			}
+		uint8_t i = 0;
+		while (*cmdPtr != '\0') {
+			Cmd[i] = (char) *cmdPtr;
+			i++;
+			cmdPtr++;
 		}
+		Cmd[i] = '\0';
 
-		printf("Cmd = %s Arg = %s n = %u \r\n", Cmd, Arg, n);
+		argPtr = string_parse((char *) CmdBuffer, 1);
 
-		for (size_t i = 0; i < n; i++)
-			free(word_array[i]);
-		free(word_array);
+		i = 0;
+		while (*argPtr != '\0') {
+			Arg[i] = (char) *argPtr;
+			i++;
+			argPtr++;
+		}
+		Arg[i] = '\0';
+
+		// Parse command and possible numeric arg
+//		char s[] = "Initial string";
+//		char ** word_array = NULL;
+
+//		strcpy(s, CmdBuffer);
+//		n = string_parser(s, &word_array);
+//
+//		for (size_t i = 0; i < n; i++) {
+//			if (i == 0) {
+//				strcpy(Cmd, word_array[i]);
+//			}
+//			if (i == 1) {
+//				strcpy(Arg, word_array[i]);
+//			}
+//			if (i > 1) {
+//				printf("Wrong number of arguments \r\n");
+//			}
+//		}
+
+		// printf("Cmd = %s Arg = %s n = %u \r\n", Cmd, Arg, n);
+
+//		for (size_t i = 0; i < n; i++)
+//			free(word_array[i]);
+//		free(word_array);
 
 		// Branch based on command
 
+		// Length of the second argument
+		n = strlen(Arg);
+
 		// meas: Sample and plot a data set
-		if ((strcmp(Cmd, "meas") == 0) && (n == 1)) {
+		if ((strcmp(Cmd, "meas") == 0) && (n == 0)) {
 
 			// Countdown
 			CountDown(Count_ms);
@@ -397,7 +425,7 @@ int main(void)
 		}
 
 		// setpoints: Adjust sampled points
-		else if ((strcmp(Cmd, "setpoints") == 0) && (n == 2)) {
+		else if ((strcmp(Cmd, "setpoints") == 0) && (n > 0)) {
 			// Allocate more or less data space
 			NoOfPoints = (uint32_t) strtol(Arg, NULL, 10);
 			printf("Old Data size is %u New NoOfPOints = %lu \r\n",
@@ -408,27 +436,27 @@ int main(void)
 		}
 
 		// setavg: Adjust average amount in samples
-		else if ((strcmp(Cmd, "setavg") == 0) && (n == 2)) {
+		else if ((strcmp(Cmd, "setavg") == 0) && (n > 0)) {
 			AvgSize = (uint32_t) strtol(Arg, NULL, 10);
 		}
 
 		// setperiod: Adjust sample period in us
-		else if ((strcmp(Cmd, "setperiod") == 0) && (n == 2)) {
+		else if ((strcmp(Cmd, "setperiod") == 0) && (n > 0)) {
 			Period_us = (uint32_t) strtol(Arg, NULL, 10);
 		}
 
 		// setcount: Adjust countdown period in ms
-		else if ((strcmp(Cmd, "setcount") == 0) && (n == 2)) {
+		else if ((strcmp(Cmd, "setcount") == 0) && (n > 0)) {
 			Count_ms = (uint32_t) strtol(Arg, NULL, 10);
 		}
 
 		// dir: Print file listing
-		else if ((strcmp(Cmd, "dir") == 0) && (n == 1)) {
+		else if ((strcmp(Cmd, "dir") == 0) && (n == 0)) {
 			DirList();
 		}
 
 		// quit: Exit on next while
-		else if ((strcmp(Cmd, "quit") == 0) && (n == 1)) {
+		else if ((strcmp(Cmd, "quit") == 0) && (n == 0)) {
 			// Do nothing yet
 		} else {
 			printf("Wrong command or argument \r\n");
@@ -540,26 +568,35 @@ int _read(int file, char *ptr, int len) {
 	return len;
 }
 
+// FreeRTOS printf functions need this
+void vOutputChar(const char cChar, const TickType_t xTicksToWait) {
+	/* Eg. send a byte to the UART. */
+}
+
+BaseType_t xApplicationMemoryPermissions(uint32_t aAddress) {
+	return 3;
+}
+
 // FreeRTOS heap4 malloc
 // https://embeddedartistry.com/blog/2018/1/15/implementing-malloc-with-freertos
 
-void* malloc(size_t size) {
-	void* ptr = NULL;
-
-	if (size > 0) {
-		// We simply wrap the FreeRTOS call into a standard form
-		ptr = pvPortMalloc(size);
-	} // else NULL if there was an error
-
-	return ptr;
-}
-
-void free(void* ptr) {
-	if (ptr) {
-		// We simply wrap the FreeRTOS call into a standard form
-		vPortFree(ptr);
-	}
-}
+//void* malloc(size_t size) {
+//	void* ptr = NULL;
+//
+//	if (size > 0) {
+//		// We simply wrap the FreeRTOS call into a standard form
+//		ptr = pvPortMalloc(size);
+//	} // else NULL if there was an error
+//
+//	return ptr;
+//}
+//
+//void free(void* ptr) {
+//	if (ptr) {
+//		// We simply wrap the FreeRTOS call into a standard form
+//		vPortFree(ptr);
+//	}
+//}
 
 /* USER CODE END 4 */
 
@@ -829,7 +866,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 100;
+	htim2.Init.Period = 0xFFFFFFFF;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
