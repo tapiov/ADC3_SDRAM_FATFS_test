@@ -106,7 +106,6 @@ osThreadId defaultTaskHandle;
 
 FATFS SDRAMFatFs;
 FIL MyFile;
-FIL MyFile1;
 char SDRAMPath[4]; /* SDRAM card logical drive path */
 uint8_t workBuffer[_MAX_SS];
 
@@ -153,8 +152,9 @@ extern void CountDown(uint32_t millisecs);
 extern FRESULT scan_files(char* path);
 extern void SamplePoints(Array *Data, uint32_t NoOfPoints, uint32_t Period_us);
 extern void AvgAndPlotPoints(Array *Data, uint32_t NoOfPoints, uint32_t AvgSize);
-extern void WriteData2FS(char *path, Array *Data, uint32_t NoOfPoints,
-		uint32_t MeasNo);
+extern void WriteData2FS(const Diskio_drvTypeDef SDRAMDISK_Driver,
+		FATFS SDRAMFatFs, char SDRAMPath[4], FIL MyFile, Array *Data,
+		uint32_t NoOfPoints, uint32_t MeasNo);
 extern void DirList(void);
 
 extern int test_diskio(BYTE pdrv, /* Physical drive number to be checked (all data on the drive will be lost) */
@@ -373,24 +373,34 @@ int main(void)
 
 			// Write the unaveraged (full) data to file meas#.txt
 
+			// Unlink the SDRAM disk I/O driver
+			FATFS_UnLinkDriver(SDRAMPath);
+
+			char fname[30] = " ";
+
+			sprintf(fname, "meas_%lu.txt", MeasNo);
+
+			printf("Writing data to file %s... ", fname);
+
 			// Link the SDRAM disk I/O driver
-			if (FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMPath) == 0) {
-				printf("SDRAM FATFS link Success \r\n");
+			if (FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMPath) != 0) {
+				printf("	SDRAM FATFS link Error \r\n");
+				_Error_Handler(__FILE__, __LINE__);
 			}
+
 			// Register the file system object to the FatFs module
 			if (f_mount(&SDRAMFatFs, (TCHAR const*) SDRAMPath, 0) != FR_OK) {
 				// FatFs Initialization Error
+				printf("	SDRAM FATFS mount Error \r\n");
 				_Error_Handler(__FILE__, __LINE__);
-			} else {
-				printf("SDRAM FATFS mount Success \r\n");
 			}
+
 			// Create and Open a new text file object with write access
-			if (f_open(&MyFile, "MEAS1.TXT", FA_CREATE_ALWAYS | FA_WRITE)
+			if (f_open(&MyFile, fname, FA_CREATE_ALWAYS | FA_WRITE)
 					!= FR_OK) {
 				// File Open for write Error
+				printf("	SDRAM FATFS fopen Error \r\n");
 				_Error_Handler(__FILE__, __LINE__);
-			} else {
-				printf("SDRAM FATFS fopen Success \r\n");
 			}
 
 			char buffer[30];
@@ -403,53 +413,30 @@ int main(void)
 			}
 
 			if ((byteswritten == 0) || (res != FR_OK)) {
+				printf("	SDRAM FATFS write Error \r\n");
 				_Error_Handler(__FILE__, __LINE__);
-			} else {
-				printf("SDRAM FATFS write Success \r\n");
-				// Close the text file
-				f_close(&MyFile);
-				printf("SDRAM FATFS fclose Success \r\n");
 			}
 
+			// Close the text file
+			f_close(&MyFile);
+			// printf("SDRAM FATFS fclose Success \r\n");
 
-//			if (f_open(&MyFile, "MEAS.TXT", FA_CREATE_ALWAYS | FA_WRITE)
-//					!= FR_OK) {
-//				// File Open for write Error
-//				_Error_Handler(__FILE__, __LINE__);
-//			} else {
-//				printf("Opened file %s OK \r\n", "MEAS.TXT");
-//			}
-//
-//			uint32_t byteswritten = 0;
-//			uint32_t totalbytes = 0; //File write counts
-//			char buffer[] = "test";
-//
-//			// Write data to the text file line by line
-//			for (int idx = 0; idx < NoOfPoints; idx++) {
-//				sprintf(buffer, "%lu \r\n", ((uint32_t) Data.array[idx]));
-//				int res = f_write(&MyFile, buffer, sizeof(buffer),
-//						(void *) &byteswritten);
-//
-//				res = f_write(&MyFile, wtext, sizeof(wtext),
-//						(void *) &byteswritten);
-//
-//				totalbytes += byteswritten;
-//				if ((byteswritten == 0) || (res != FR_OK)) {
-//					// File Write Error
-//					_Error_Handler(__FILE__, __LINE__);
-//				}
-//			}
-//
-//			printf("File %s, %lu bytes written \r\n", "MEAS.TXT", totalbytes);
+			printf("Write OK \r\n");
 
-//			/*##-6- Close the open text file #################################*/
-//			f_close(&MyFile);
-
-			printf("Closed file %s OK \r\n", "MEAS1.TXT");
+			DirList();
 		}
 
-	//WriteData2FS(SDRAMPath, &Data, NoOfPoints, MeasNo);
-		//}
+//			FATFS SDRAMFatFs;
+//			FIL MyFile;
+//			char SDRAMPath[4]; /* SDRAM card logical drive path */
+//			uint8_t workBuffer[_MAX_SS];
+//
+//			const Diskio_drvTypeDef SDRAMDISK_Driver;
+//
+//			WriteData2FS(SDRAMDISK_Driver, SDRAMFatFs, &SDRAMPath[4], MyFile,
+//					&Data, NoOfPoints, MeasNo);
+//
+//		}
 
 		// setpoints: Adjust sampled points
 		else if ((strcmp(Cmd, "setpoints") == 0) && (n > 0)) {
@@ -916,7 +903,7 @@ static void MX_TIM2_Init(void)
   TIM_MasterConfigTypeDef sMasterConfig;
 
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
+	htim2.Init.Prescaler = 99;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
 	htim2.Init.Period = 0xFFFFFFFF;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;

@@ -274,9 +274,10 @@ void SamplePoints(Array *Data, uint32_t NoOfPoints, uint32_t Period_us) {
 
 		// Wait for Period_us-1 us
 		while ((__HAL_TIM_GET_COUNTER(&htim2)) < (Period_us - 1)) {
-			printf("Counter %lu \r\n", __HAL_TIM_GET_COUNTER(&htim2));
 			;;
 		}
+
+		// printf("End Counter %lu \r\n", __HAL_TIM_GET_COUNTER(&htim2));
 
 		// Stop TIM2
 		if ((HAL_TIM_Base_Stop(&htim2)) != HAL_OK) {
@@ -326,69 +327,72 @@ void AvgAndPlotPoints(Array *Data, uint32_t NoOfPoints, uint32_t AvgSize) {
 	LCDWrite(0, MyStr);
 }
 
-void WriteData2FS(char *path, Array *Data, uint32_t NoOfPoints, uint32_t MeasNo) {
+void WriteData2FS(const Diskio_drvTypeDef SDRAMDISK_Driver, FATFS SDRAMFatFs,
+		char SDRAMPath[4], FIL MyFile, Array *Data, uint32_t NoOfPoints,
+		uint32_t MeasNo) {
 
 	// Create file for data, as meas#.txt
 
 	FRESULT res; // FatFs function common result code
-	char buffer[1000] = " ";
 	uint32_t byteswritten, totalbytes; //File write counts
 
-	FATFS SDRAMFatFs;
-	const Diskio_drvTypeDef drv;
-	char SDRAMPath[4]; /* SDRAM card logical drive path */
+	//FATFS SDRAMFatFs;
+	//const Diskio_drvTypeDef drv;
+	//char SDRAMPath[4]; /* SDRAM card logical drive path */
 
-	char fname[30] = " ";
+	//char fname[30] = " ";
 
-	sprintf(fname, "meas_%lu.txt", MeasNo);
+	//sprintf(fname, "meas_%lu.txt", MeasNo);
 
-	FIL MyFile;
+	//FIL MyFile;
 	uint32_t idx;
 
 	totalbytes = 0;
 
+	// Unlink the SDRAM disk I/O driver
+	FATFS_UnLinkDriver(SDRAMPath);
+
+
 	printf("Starting file write 1 \r\n");
 
-	// ##-1- Link the SDRAM disk I/O driver ##################################
-	if (FATFS_LinkDriver(&drv, path) == 0) {
-		printf("FILE WRITE SDRAM FATFS link Success 1. \r\n");
-	} else {
-		_Error_Handler(__FILE__, __LINE__);
+	// Link the SDRAM disk I/O driver
+	if (FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMPath) == 0) {
+		printf("SDRAM FATFS link Success \r\n");
 	}
-
-	// ##-2- Register the file system object to the FatFs module ##############
-	if (f_mount(&SDRAMFatFs, (TCHAR const*) path, 1) != FR_OK) {
-		/* FatFs Initialization Error */
+	// Register the file system object to the FatFs module
+	if (f_mount(&SDRAMFatFs, (TCHAR const*) SDRAMPath, 0) != FR_OK) {
+		// FatFs Initialization Error
 		_Error_Handler(__FILE__, __LINE__);
 	} else {
-		printf("File write mount success 2. \r\n");
+		printf("SDRAM FATFS mount Success \r\n");
 	}
-
-	if (f_open(&MyFile, "MEAS.TXT", FA_CREATE_ALWAYS | FA_WRITE) != FR_OK) {
+	// Create and Open a new text file object with write access
+	if (f_open(&MyFile, "MEAS1.TXT", FA_CREATE_ALWAYS | FA_WRITE) != FR_OK) {
 		// File Open for write Error
 		_Error_Handler(__FILE__, __LINE__);
 	} else {
-		printf("Opened file %s OK \r\n", fname);
+		printf("SDRAM FATFS fopen Success \r\n");
 	}
 
-	// Write data to the text file line by line
-	for (idx = 0; idx < NoOfPoints; idx++) {
+	char buffer[30];
+
+	// Write data to the text file
+	for (int idx = 0; idx < NoOfPoints; idx++) {
 		sprintf(buffer, "%lu \r\n", ((uint32_t) Data->array[idx]));
-		res = f_write(&MyFile, buffer, strlen(buffer), (void *) &byteswritten);
-			totalbytes += byteswritten;
-			if ((byteswritten == 0) || (res != FR_OK)) {
-				// File Write Error
-				_Error_Handler(__FILE__, __LINE__);
-			}
-		}
-
-		printf("File %s, %lu bytes written \r\n", fname, totalbytes);
-
-		/*##-6- Close the open text file #################################*/
-		f_close(&MyFile);
-
-		printf("Closed file %s OK \r\n", fname);
+		res = f_write(&MyFile, buffer, sizeof(buffer), (void *) &byteswritten);
 	}
+
+	if ((byteswritten == 0) || (res != FR_OK)) {
+		_Error_Handler(__FILE__, __LINE__);
+	} else {
+		printf("SDRAM FATFS write Success \r\n");
+		// Close the text file
+		f_close(&MyFile);
+		printf("SDRAM FATFS fclose Success \r\n");
+	}
+
+	printf("Closed file %s OK \r\n", "MEAS1.TXT");
+}
 
 void DirList(void) {
 
