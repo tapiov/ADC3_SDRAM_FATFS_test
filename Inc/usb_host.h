@@ -1,7 +1,8 @@
 /**
   ******************************************************************************
-  * @file    sdram_diskio.h (based on sdram_diskio_template.h v2.0.2)
-  * @brief   Header for sdram_diskio.c module
+  * @file           : usb_host.h
+  * @version        : v1.0_Cube
+  * @brief          : Header for usb_host.c file.
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -47,29 +48,73 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __SDRAM_DISKIO_H
-#define __SDRAM_DISKIO_H
+#ifndef __USB_HOST__H__
+#define __USB_HOST__H__
 
-/* USER CODE BEGIN firstSection */ 
-/* can be used to modify / undefine following code or add new definitions */
-/* USER CODE END firstSection */ 
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "bsp_driver_sdram.h"
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
-extern const Diskio_drvTypeDef  SDRAMDISK_Driver;
+#include "stm32f7xx.h"
+#include "stm32f7xx_hal.h"
 
-/* USER CODE BEGIN lastSection */ 
+/* USER CODE BEGIN INCLUDE */
 
-// TV: Hop over VRAM
-#define SDRAM_DISK_ADDR		SDRAM_DEVICE_ADDR + ((uint32_t)0x100000)
-#define SDRAM_DISK_SIZE		SDRAM_DEVICE_SIZE - ((uint32_t)0x100000)
+/* USER CODE END INCLUDE */
 
-/* USER CODE END lastSection */ 
+/** @addtogroup USBH_OTG_DRIVER
+  * @{
+  */
 
-#endif /* __SDRAM_DISKIO_H */
+/** @defgroup USBH_HOST USBH_HOST
+  * @brief Host file for Usb otg low level driver.
+  * @{
+  */
+
+/** @defgroup USBH_HOST_Exported_Variables USBH_HOST_Exported_Variables
+  * @brief Public variables.
+  * @{
+  */
+
+/**
+  * @}
+  */
+
+/** Status of the application. */
+typedef enum {
+  APPLICATION_IDLE = 0,
+  APPLICATION_START,
+  APPLICATION_READY,
+  APPLICATION_DISCONNECT
+}ApplicationTypeDef;
+
+/** @defgroup USBH_HOST_Exported_FunctionsPrototype USBH_HOST_Exported_FunctionsPrototype
+  * @brief Declaration of public functions for Usb host.
+  * @{
+  */
+
+/* Exported functions -------------------------------------------------------*/
+
+/** @brief USB Host initialization function. */
+void MX_USB_HOST_Init(void);
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __USB_HOST__H__ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-

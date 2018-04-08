@@ -2,3 +2,10 @@
 *.elf
 *.hex
 *.o
+/Debug/
+*.o
+*.su
+*.su
+*.elf
+*.hex
+*.su

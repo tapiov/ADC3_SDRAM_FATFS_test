@@ -210,7 +210,7 @@ uint16_t    String_GetString( uint8_t *Buffer )
                 //
                 // Echo it back to the user
                 //
-                String_PutByte( Byte );
+			//String_PutByte( Byte );
                 break;
         }
     }

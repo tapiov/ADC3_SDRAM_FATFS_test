@@ -61,13 +61,16 @@
 
 /* USER CODE BEGIN 0 */
 
-/** 
-  * @brief  SDRAM status structure definition  
-  */     
+#include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal_sdram.h"
+
+/**
+  * @brief  SDRAM status structure definition
+  */
 #define   SDRAM_OK         ((uint8_t)0x00)
 #define   SDRAM_ERROR      ((uint8_t)0x01)
 
-/* Exported constants --------------------------------------------------------*/ 
+/* Exported constants --------------------------------------------------------*/
 
 #define SDRAM_DEVICE_ADDR  ((uint32_t)0xC0000000)
 #define SDRAM_DEVICE_SIZE  ((uint32_t)0x800000)  /* SDRAM device size in MBytes */
@@ -77,11 +80,11 @@
 /* #define SDRAM_MEMORY_WIDTH            FMC_SDRAM_MEM_BUS_WIDTH_32 */
 
 #define SDCLOCK_PERIOD                FMC_SDRAM_CLOCK_PERIOD_2
-/* #define SDCLOCK_PERIOD                FMC_SDRAM_CLOCK_PERIOD_3 */   
+/* #define SDCLOCK_PERIOD                FMC_SDRAM_CLOCK_PERIOD_3 */
 
 #define REFRESH_COUNT                ((uint32_t)0x0603)      /* SDRAM refresh counter (100Mhz SD clock) */
-   
-#define SDRAM_TIMEOUT     ((uint32_t)0xFFFF) 
+
+#define SDRAM_TIMEOUT     ((uint32_t)0xFFFF)
 
 /* DMA definitions for SDRAM DMA transfer */
 
@@ -92,7 +95,7 @@
 #define SDRAM_DMAx_IRQn       DMA2_Stream0_IRQn
 #define SDRAM_DMAx_IRQHandler DMA2_Stream0_IRQHandler
 
-   
+
 /**
   * @brief  FMC SDRAM Mode definition register defines
   */
@@ -110,7 +113,7 @@
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
 
 
-/* Exported functions --------------------------------------------------------*/   
+/* Exported functions --------------------------------------------------------*/
 uint8_t BSP_SDRAM_Init(void);
 uint8_t BSP_SDRAM_ReadData(uint32_t uwStartAddress, uint32_t *pData, uint32_t uwDataSize);
 uint8_t BSP_SDRAM_ReadData_DMA(uint32_t uwStartAddress, uint32_t *pData, uint32_t uwDataSize);

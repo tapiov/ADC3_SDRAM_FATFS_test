@@ -1,7 +1,7 @@
-bsp_driver_sdram.c:66:9:BSP_SDRAM_Init	16	static
-bsp_driver_sdram.c:105:9:BSP_SDRAM_ReadData	32	static
-bsp_driver_sdram.c:124:9:BSP_SDRAM_ReadData_DMA	32	static
-bsp_driver_sdram.c:143:9:BSP_SDRAM_WriteData	32	static
-bsp_driver_sdram.c:162:9:BSP_SDRAM_WriteData_DMA	32	static
-bsp_driver_sdram.c:179:9:BSP_SDRAM_Sendcmd	24	static
-bsp_driver_sdram.c:197:6:BSP_SDRAM_Initialization_Sequence	24	static
+bsp_driver_sdram.c:65:9:BSP_SDRAM_Init	16	static
+bsp_driver_sdram.c:79:9:BSP_SDRAM_ReadData	32	static
+bsp_driver_sdram.c:98:9:BSP_SDRAM_ReadData_DMA	32	static
+bsp_driver_sdram.c:117:9:BSP_SDRAM_WriteData	32	static
+bsp_driver_sdram.c:136:9:BSP_SDRAM_WriteData_DMA	32	static
+bsp_driver_sdram.c:153:9:BSP_SDRAM_Sendcmd	24	static
+bsp_driver_sdram.c:171:6:BSP_SDRAM_Initialization_Sequence	24	static

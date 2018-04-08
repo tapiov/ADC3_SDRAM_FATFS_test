@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
-  * @file    sdram_diskio.h (based on sdram_diskio_template.h v2.0.2)
-  * @brief   Header for sdram_diskio.c module
+  * File Name          : freertos.c
+  * Description        : Code for freertos applications
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -46,30 +46,30 @@
   ******************************************************************************
   */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __SDRAM_DISKIO_H
-#define __SDRAM_DISKIO_H
-
-/* USER CODE BEGIN firstSection */ 
-/* can be used to modify / undefine following code or add new definitions */
-/* USER CODE END firstSection */ 
-
 /* Includes ------------------------------------------------------------------*/
-#include "bsp_driver_sdram.h"
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
-extern const Diskio_drvTypeDef  SDRAMDISK_Driver;
+#include "FreeRTOS.h"
+#include "task.h"
 
-/* USER CODE BEGIN lastSection */ 
+/* USER CODE BEGIN Includes */     
 
-// TV: Hop over VRAM
-#define SDRAM_DISK_ADDR		SDRAM_DEVICE_ADDR + ((uint32_t)0x100000)
-#define SDRAM_DISK_SIZE		SDRAM_DEVICE_SIZE - ((uint32_t)0x100000)
+/* USER CODE END Includes */
 
-/* USER CODE END lastSection */ 
+/* Variables -----------------------------------------------------------------*/
 
-#endif /* __SDRAM_DISKIO_H */
+/* USER CODE BEGIN Variables */
+
+/* USER CODE END Variables */
+
+/* Function prototypes -------------------------------------------------------*/
+
+/* USER CODE BEGIN FunctionPrototypes */
+
+/* USER CODE END FunctionPrototypes */
+
+/* Hook prototypes */
+
+/* USER CODE BEGIN Application */
+     
+/* USER CODE END Application */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-
