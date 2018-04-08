@@ -70,6 +70,10 @@
 #include <ctype.h>
 
 #include "MyString.h"
+
+#include "ff.h"         /* Declarations of sector size */
+#include "diskio.h"     /* Declarations of disk functions */
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -102,6 +106,7 @@ osThreadId defaultTaskHandle;
 
 FATFS SDRAMFatFs;
 FIL MyFile;
+FIL MyFile1;
 char SDRAMPath[4]; /* SDRAM card logical drive path */
 uint8_t workBuffer[_MAX_SS];
 
@@ -148,8 +153,16 @@ extern void CountDown(uint32_t millisecs);
 extern FRESULT scan_files(char* path);
 extern void SamplePoints(Array *Data, uint32_t NoOfPoints, uint32_t Period_us);
 extern void AvgAndPlotPoints(Array *Data, uint32_t NoOfPoints, uint32_t AvgSize);
-extern void WriteData2FS(Array *Data, uint32_t NoOfPoints, uint32_t MeasNo);
+extern void WriteData2FS(char *path, Array *Data, uint32_t NoOfPoints,
+		uint32_t MeasNo);
 extern void DirList(void);
+
+extern int test_diskio(BYTE pdrv, /* Physical drive number to be checked (all data on the drive will be lost) */
+UINT ncyc, /* Number of test cycles */
+DWORD* buff, /* Pointer to the working buffer */
+UINT sz_buff /* Size of the working buffer in unit of byte */
+);
+
 
 /* USER CODE END PFP */
 
@@ -234,80 +247,43 @@ int main(void)
 	BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
 	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 
-	/*##-1- Link the SDRAM disk I/O driver ##################################*/
+	// Initialize SDRAM FATFS
+	printf("Format SDRAM disk ... \r\n");
 	if (FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMPath) == 0) {
-		printf("SDRAM FATFS link Success 1. \r\n");
-		/*##-2- Register the file system object to the FatFs module ##############*/
-		if (f_mount(&SDRAMFatFs, (TCHAR const*) SDRAMPath, 0) != FR_OK) {
-			/* FatFs Initialization Error */
-			_Error_Handler(__FILE__, __LINE__);
-		} else {
-			printf("SDRAM FATFS mount Success 2. \r\n");
-			/*##-3- Create a FAT file system (format) on the logical drive #########*/
-			if (f_mkfs((TCHAR const*) SDRAMPath, FM_FAT32, 0, workBuffer,
-					sizeof(workBuffer)) != FR_OK) {
-				/* FatFs Format Error */
-				_Error_Handler(__FILE__, __LINE__);
-			} else {
-				printf("SDRAM FATFS format Success 3. \r\n");
-				/*##-4- Create and Open a new text file object with write access #####*/
-				if (f_open(&MyFile, "STM32.TXT",
-						FA_CREATE_ALWAYS | FA_WRITE)
-						!= FR_OK) {
-					/* 'STM32.TXT' file Open for write Error */
-					_Error_Handler(__FILE__, __LINE__);
-				} else {
-					printf("SDRAM FATFS fopen Success 4. \r\n");
-					/*##-5- Write data to the text file ################################*/
-					res = f_write(&MyFile, wtext, sizeof(wtext),
-							(void *) &byteswritten);
-
-					if ((byteswritten == 0) || (res != FR_OK)) {
-						/* 'STM32.TXT' file Write or EOF Error */
-						_Error_Handler(__FILE__, __LINE__);
-					} else {
-						printf("SDRAM FATFS write Success 5. \r\n");
-						/*##-6- Close the open text file #################################*/
-						f_close(&MyFile);
-						printf("SDRAM FATFS fclose Success 6. \r\n");
-
-						/*##-7- Open the text file object with read access ###############*/
-						if (f_open(&MyFile, "STM32.TXT", FA_READ)
-								!= FR_OK) {
-							/* 'STM32.TXT' file Open for read Error */
-							_Error_Handler(__FILE__, __LINE__);
-						} else {
-							printf("SDRAM FATFS fopen(read) Success 7. \r\n");
-							/*##-8- Read data from the text file ###########################*/
-							res = f_read(&MyFile, rtext, sizeof(rtext),
-									(UINT*) &bytesread);
-
-							if ((bytesread == 0) || (res != FR_OK)) {
-								/* 'STM32.TXT' file Read or EOF Error */
-								_Error_Handler(__FILE__, __LINE__);
-							} else {
-								printf("SDRAM FATFS read Success 8. \r\n");
-								/*##-9- Close the open text file #############################*/
-								f_close(&MyFile);
-								printf("SDRAM FATFS fclose Success 9. \r\n");
-								/*##-10- Compare read data with the expected data ############*/
-								if ((bytesread != byteswritten)) {
-									/* Read data is different from the expected data */
-									_Error_Handler(__FILE__, __LINE__);
-								} else {
-									/* Success of the demo: no error occurrence */
-									printf("SDRAM FATFS Success 10. \r\n");
-
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+		printf("	SDRAM FATFS link Success \r\n");
+	}
+	// Register the file system object to the FatFs module
+	if (f_mount(&SDRAMFatFs, (TCHAR const*) SDRAMPath, 0) != FR_OK) {
+		// FatFs Initialization Error
+		_Error_Handler(__FILE__, __LINE__);
+	} else {
+		printf("	SDRAM FATFS mount Success \r\n");
+	}
+	// Create a FAT file system (format) on the logical drive
+	if (f_mkfs((TCHAR const*) SDRAMPath, FM_FAT32, 0, workBuffer,
+			sizeof(workBuffer)) != FR_OK) {
+		// FatFs Format Error
+		_Error_Handler(__FILE__, __LINE__);
+	} else {
+		printf("Format SDRAM disk done OK \r\n");
 	}
 
-	DirList();
+	// Unlink the SDRAM disk I/O driver
+	FATFS_UnLinkDriver(SDRAMPath);
+
+	int rc;
+	DWORD buff[_MAX_SS]; /* Working buffer (4 sector in size) */
+
+	/* Check function/compatibility of the physical drive #0 */
+//	rc = test_diskio(0, 3, buff, sizeof buff);
+//
+//	if (rc) {
+//		printf(
+//				"Sorry the function/compatibility test failed. (rc=%d)\nFatFs will not work with this disk driver.\n",
+//				rc);
+//	} else {
+//		printf("Congratulations! The disk driver works well.\n");
+//	}
 
 	char *cmdPtr;
 	char *argPtr;
@@ -337,7 +313,7 @@ int main(void)
 	Cmd[0] = '\0';
 	Arg[0] = '\0';
 
-	while (!((strcmp(Cmd, "quit") == 0) && (n == 1))) {
+	while (!((strcmp(Cmd, "quit") == 0) && (n == 0))) {
 
 		// Print Ready and current settings
 
@@ -345,7 +321,7 @@ int main(void)
 				"Ready. Settings are Points=%lu, Avg=%lu, Period_us=%lu, Count_ms=%lu. "
 						"Sampling will take apprx %s secs \r\n", NoOfPoints,
 				AvgSize, Period_us, Count_ms,
-				myPrintf(NoOfPoints * Period_us / 1000000));
+				myPrintf(NoOfPoints * Period_us / 1000000.0));
 
 		Cmd[0] = '\0';
 		Arg[0] = '\0';
@@ -355,7 +331,7 @@ int main(void)
 			String_GetString((uint8_t *) CmdBuffer);
 		}
 
-		printf("\r\n I got %s \r\n", CmdBuffer);
+		//printf("\r\n I got %s \r\n", CmdBuffer);
 
 		// Parse and copy arg 0
 		cmdPtr = string_parse((char *) CmdBuffer, 0);
@@ -371,37 +347,12 @@ int main(void)
 		argPtr = string_parse((char *) CmdBuffer, 1);
 
 		i = 0;
-		while (*argPtr != '\0') {
+		while ((argPtr != NULL) && (*argPtr != '\0')) {
 			Arg[i] = (char) *argPtr;
 			i++;
 			argPtr++;
 		}
 		Arg[i] = '\0';
-
-		// Parse command and possible numeric arg
-//		char s[] = "Initial string";
-//		char ** word_array = NULL;
-
-//		strcpy(s, CmdBuffer);
-//		n = string_parser(s, &word_array);
-//
-//		for (size_t i = 0; i < n; i++) {
-//			if (i == 0) {
-//				strcpy(Cmd, word_array[i]);
-//			}
-//			if (i == 1) {
-//				strcpy(Arg, word_array[i]);
-//			}
-//			if (i > 1) {
-//				printf("Wrong number of arguments \r\n");
-//			}
-//		}
-
-		// printf("Cmd = %s Arg = %s n = %u \r\n", Cmd, Arg, n);
-
-//		for (size_t i = 0; i < n; i++)
-//			free(word_array[i]);
-//		free(word_array);
 
 		// Branch based on command
 
@@ -421,8 +372,84 @@ int main(void)
 			AvgAndPlotPoints(&Data, NoOfPoints, AvgSize);
 
 			// Write the unaveraged (full) data to file meas#.txt
-			WriteData2FS(&Data, NoOfPoints, MeasNo);
+
+			// Link the SDRAM disk I/O driver
+			if (FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMPath) == 0) {
+				printf("SDRAM FATFS link Success \r\n");
+			}
+			// Register the file system object to the FatFs module
+			if (f_mount(&SDRAMFatFs, (TCHAR const*) SDRAMPath, 0) != FR_OK) {
+				// FatFs Initialization Error
+				_Error_Handler(__FILE__, __LINE__);
+			} else {
+				printf("SDRAM FATFS mount Success \r\n");
+			}
+			// Create and Open a new text file object with write access
+			if (f_open(&MyFile, "MEAS1.TXT", FA_CREATE_ALWAYS | FA_WRITE)
+					!= FR_OK) {
+				// File Open for write Error
+				_Error_Handler(__FILE__, __LINE__);
+			} else {
+				printf("SDRAM FATFS fopen Success \r\n");
+			}
+
+			char buffer[30];
+
+			// Write data to the text file
+			for (int idx = 0; idx < NoOfPoints; idx++) {
+				sprintf(buffer, "%lu \r\n", ((uint32_t) Data.array[idx]));
+				res = f_write(&MyFile, buffer, sizeof(buffer),
+						(void *) &byteswritten);
+			}
+
+			if ((byteswritten == 0) || (res != FR_OK)) {
+				_Error_Handler(__FILE__, __LINE__);
+			} else {
+				printf("SDRAM FATFS write Success \r\n");
+				// Close the text file
+				f_close(&MyFile);
+				printf("SDRAM FATFS fclose Success \r\n");
+			}
+
+
+//			if (f_open(&MyFile, "MEAS.TXT", FA_CREATE_ALWAYS | FA_WRITE)
+//					!= FR_OK) {
+//				// File Open for write Error
+//				_Error_Handler(__FILE__, __LINE__);
+//			} else {
+//				printf("Opened file %s OK \r\n", "MEAS.TXT");
+//			}
+//
+//			uint32_t byteswritten = 0;
+//			uint32_t totalbytes = 0; //File write counts
+//			char buffer[] = "test";
+//
+//			// Write data to the text file line by line
+//			for (int idx = 0; idx < NoOfPoints; idx++) {
+//				sprintf(buffer, "%lu \r\n", ((uint32_t) Data.array[idx]));
+//				int res = f_write(&MyFile, buffer, sizeof(buffer),
+//						(void *) &byteswritten);
+//
+//				res = f_write(&MyFile, wtext, sizeof(wtext),
+//						(void *) &byteswritten);
+//
+//				totalbytes += byteswritten;
+//				if ((byteswritten == 0) || (res != FR_OK)) {
+//					// File Write Error
+//					_Error_Handler(__FILE__, __LINE__);
+//				}
+//			}
+//
+//			printf("File %s, %lu bytes written \r\n", "MEAS.TXT", totalbytes);
+
+//			/*##-6- Close the open text file #################################*/
+//			f_close(&MyFile);
+
+			printf("Closed file %s OK \r\n", "MEAS1.TXT");
 		}
+
+	//WriteData2FS(SDRAMPath, &Data, NoOfPoints, MeasNo);
+		//}
 
 		// setpoints: Adjust sampled points
 		else if ((strcmp(Cmd, "setpoints") == 0) && (n > 0)) {
@@ -577,7 +604,32 @@ BaseType_t xApplicationMemoryPermissions(uint32_t aAddress) {
 	return 3;
 }
 
-// FreeRTOS heap4 malloc
+// FreeRTOS heap4 calloc & realloc
+void *pvPortCalloc(size_t nmemb, size_t size) {
+	void *pvReturn;
+
+	vTaskSuspendAll();
+	{
+		pvReturn = calloc(nmemb, size);
+	}
+	xTaskResumeAll();
+
+	return pvReturn;
+}
+
+void *pvPortRealloc(void *pv, size_t size) {
+	void *pvReturn;
+
+	vTaskSuspendAll();
+	{
+		pvReturn = realloc(pv, size);
+	}
+	xTaskResumeAll();
+
+	return pvReturn;
+}
+
+// FreeRTOS heap4 stuff (not needed)
 // https://embeddedartistry.com/blog/2018/1/15/implementing-malloc-with-freertos
 
 //void* malloc(size_t size) {
