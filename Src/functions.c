@@ -396,14 +396,13 @@ void WriteData2FS(const Diskio_drvTypeDef SDRAMDISK_Driver, FATFS SDRAMFatFs,
 
 void DirList(void) {
 
+
+
 	FATFS fs;
 	FRESULT res;
-	char buff[256];
+	DWORD buff[_MAX_SS];
 
-	// Should be mounted already
-	res = f_mount(&fs, "", 1);
-	if (res == FR_OK) {
-		strcpy(buff, "");
+	strcpy(buff, "");
 
 		// File list
 		res = scan_files(buff);
@@ -426,13 +425,9 @@ void DirList(void) {
 		// Print the free space (assuming 512 bytes/sector)
 		printf(
 				"%10lu KiB total drive space.\n%10lu KiB available (%s\%%). \n",
-				tot_sect / 2, fre_sect / 2,
+				(tot_sect / 2048), (fre_sect / 2048),
 				myPrintf(((float) (fre_sect)) / ((float) (tot_sect)) * 100.0));
 
-	} else {
-		printf("Error: Filesystem mount failed \r\n");
-		_Error_Handler(__FILE__, __LINE__);
-	}
 }
 
 

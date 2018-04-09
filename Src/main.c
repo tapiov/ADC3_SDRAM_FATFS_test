@@ -466,7 +466,51 @@ int main(void)
 
 		// dir: Print file listing
 		else if ((strcmp(Cmd, "dir") == 0) && (n == 0)) {
-			DirList();
+
+			// Unlink the SDRAM disk I/O driver
+			FATFS_UnLinkDriver(SDRAMPath);
+
+			// Link the SDRAM disk I/O driver
+			if (FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMPath) != 0) {
+				printf("	SDRAM FATFS link Error \r\n");
+				_Error_Handler(__FILE__, __LINE__);
+			}
+
+			// Register the file system object to the FatFs module
+			if (f_mount(&SDRAMFatFs, (TCHAR const*) SDRAMPath, 0) != FR_OK) {
+				// FatFs Initialization Error
+				printf("	SDRAM FATFS mount Error \r\n");
+				_Error_Handler(__FILE__, __LINE__);
+			}
+
+			strcpy(buff, "");
+
+			// File list
+			res = scan_files(buff);
+
+			// Disk free space
+			DWORD fre_clust, fre_sect, tot_sect;
+			FATFS *fsp;
+
+			// Get volume information and free clusters of drive 1
+			res = f_getfree(buff, &fre_clust, &fsp);
+			if (res) {
+				printf("Error: Filesystem free space check failed \r\n");
+				_Error_Handler(__FILE__, __LINE__);
+			}
+
+			// Get total sectors and free sectors
+			tot_sect = (fsp->n_fatent - 2) * fsp->csize;
+			fre_sect = fre_clust * fsp->csize;
+
+			// Print the free space (assuming 512 bytes/sector)
+			printf(
+					"%10lu KiB total drive space.\n%10lu KiB available (%s\%%). \n",
+					(tot_sect / 2048), (fre_sect / 2048),
+					myPrintf(
+							((float) (fre_sect)) / ((float) (tot_sect))
+									* 100.0));
+
 		}
 
 		// quit: Exit on next while
@@ -488,6 +532,8 @@ int main(void)
 	LCDWrite(5, "Stop.");
 
 	printf("Exit. Data freed. Stop. \r\n");
+
+	/* USER CODE END 2 */
 
 	/* USER CODE BEGIN RTOS_MUTEX */
 	/* add mutexes, ... */
@@ -545,7 +591,7 @@ void StartDefaultTask(void const * argument) {
 	}
 }
 
-/* USER CODE END 2 */
+
 
 /* USER CODE BEGIN 4 */
 
